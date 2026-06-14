@@ -1,4 +1,4 @@
-import { BreakPoint, CategoryItem, GoodsItem } from "basic"
+import { BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem } from "basic"
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
@@ -127,14 +127,29 @@ export struct HomePageView {
               Image(item.imgUrl)
             })
           }
+          .displayCount(
+            new BreakPointType({
+              sm: 1,
+              md: 2,
+              lg: 3
+            }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+          )
+          .itemSpace(
+            new BreakPointType({
+              sm: 0,
+              md: 10,
+              lg: 20
+            }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+          )
           .indicator(
-            DotIndicator.dot()
-              .itemWidth(8)
-              .itemHeight(4)
-              .color('#33191919')
-              .selectedItemWidth(24)
-              .selectedItemHeight(4)
-              .selectedColor('#191919')
+            this.breakPointObject?.breakPoint == BreakPointEnum.SM ?
+              DotIndicator.dot()
+                .itemWidth(8)
+                .itemHeight(4)
+                .color('#33191919')
+                .selectedItemWidth(24)
+                .selectedItemHeight(4)
+                .selectedColor('#191919') : false
           )
 
           Row() {
