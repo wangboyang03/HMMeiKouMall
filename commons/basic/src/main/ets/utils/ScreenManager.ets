@@ -1,4 +1,4 @@
-import { BreakPoint } from "../models"
+import { AppSafeArea, BreakPoint } from "../models"
 import { AppStorageV2, window } from "@kit.ArkUI"
 import { Logger } from "."
 import { BreakPointEnum } from "../Constants"
@@ -52,6 +52,50 @@ export class ScreenManager {
     try {
       const windowObject = await window.getLastWindow(this.context)
       windowObject.off('windowSizeChange')
+    } catch (error) {
+      Logger.error(error)
+    }
+  }
+}
+
+export class ScreenAreaManager {
+  private static sInstance: ScreenAreaManager
+  private constructor() {}
+
+  public static getInstance(): ScreenAreaManager {
+    if (!ScreenAreaManager.sInstance) {
+      ScreenAreaManager.sInstance = new ScreenAreaManager()
+    }
+    return ScreenAreaManager.sInstance
+  }
+
+  // 开启全屏模式
+  async openFullScreen(context: Context) {
+    try {
+      const windowObject = await window.getLastWindow(context)
+      await windowObject.setWindowLayoutFullScreen(true)
+      const topAreaHeight = windowObject.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM)
+      const bottomAreaHeight = windowObject.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)
+      const safeAreaValue = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+      if (!!safeAreaValue) {
+        safeAreaValue.topHeight = px2vp(topAreaHeight.topRect.height)
+        safeAreaValue.bottomHeight = px2vp(bottomAreaHeight.bottomRect.height)
+      }
+    } catch (error) {
+      Logger.error(error)
+    }
+  }
+
+  // 关闭全屏模式
+  async closeFullScreen(context: Context) {
+    try {
+      const windowObject = await window.getLastWindow(context)
+      await windowObject.setSystemAvoidAreaEnabled(false)
+      const safeAreaValue = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+      if (!!safeAreaValue) {
+        safeAreaValue.topHeight = 0
+        safeAreaValue.bottomHeight = 0
+      }
     } catch (error) {
       Logger.error(error)
     }

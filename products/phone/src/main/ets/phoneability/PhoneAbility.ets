@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { ScreenManager } from 'basic';
+import { ScreenAreaManager, ScreenManager } from 'basic';
 
 const DOMAIN = 0x0000;
 
@@ -26,6 +26,7 @@ export default class PhoneAbility extends UIAbility {
 
     this.screenManager = new ScreenManager(this.context)
     this.screenManager.initBreakPoint() // 初始化断点工具并监听窗口宽度变化
+    ScreenAreaManager.getInstance().openFullScreen(this.context) // 开启全屏模式
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
@@ -38,6 +39,7 @@ export default class PhoneAbility extends UIAbility {
   onWindowStageDestroy(): void {
     // Main window is destroyed, release UI related resources
     this.screenManager?.unregister()
+    ScreenAreaManager.getInstance().closeFullScreen(this.context) // 关闭全屏模式
   }
 
   onForeground(): void {

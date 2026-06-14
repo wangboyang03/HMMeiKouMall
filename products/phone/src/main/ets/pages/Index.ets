@@ -1,4 +1,4 @@
-import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams } from 'basic'
+import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea } from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomePageView } from 'homepage'
@@ -17,6 +17,7 @@ struct Index {
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
   breakPointObject = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
+  safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
 
   build() {
     Tabs({ index: this.activeIndex!!, barPosition: new BreakPointType({
@@ -59,6 +60,9 @@ struct Index {
     })
     .onTabBarClick(index => {
       this.activeIndex = index
+    })
+    .padding({
+      bottom: this.safeAreaValue?.bottomHeight
     })
   }
 
