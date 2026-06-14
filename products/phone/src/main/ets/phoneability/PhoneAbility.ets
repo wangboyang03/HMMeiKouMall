@@ -1,10 +1,12 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { ScreenManager } from 'basic';
 
 const DOMAIN = 0x0000;
 
 export default class PhoneAbility extends UIAbility {
+  screenManager?: ScreenManager
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
@@ -22,6 +24,8 @@ export default class PhoneAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
+    this.screenManager = new ScreenManager(this.context)
+    this.screenManager.initBreakPoint() // 初始化断点工具并监听窗口宽度变化
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
@@ -33,7 +37,7 @@ export default class PhoneAbility extends UIAbility {
 
   onWindowStageDestroy(): void {
     // Main window is destroyed, release UI related resources
-    hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onWindowStageDestroy');
+    this.screenManager?.unregister()
   }
 
   onForeground(): void {

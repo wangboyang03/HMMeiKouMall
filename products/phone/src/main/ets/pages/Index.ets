@@ -1,8 +1,9 @@
-import { TabItemParams } from 'basic'
+import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams } from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomePageView } from 'homepage'
 import { MineView } from 'mine'
+import { AppStorageV2 } from '@kit.ArkUI'
 
 @Entry
 @ComponentV2
@@ -15,9 +16,14 @@ struct Index {
     { text: '购物袋', normal: $r('app.media.ic_public_cart_normal'), active: $r('app.media.ic_public_cart_active') },
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
+  breakPointObject = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
 
   build() {
-    Tabs({ barPosition: BarPosition.End }) {
+    Tabs({ barPosition: new BreakPointType({
+      sm: BarPosition.End,
+      md: BarPosition.End,
+      lg: BarPosition.Start
+    }).getValue(this.breakPointObject?.breakPoint)}) {
       ForEach(this.list, (item: TabItemParams, index: number) => {
         TabContent() {
           if (index == 0) {
@@ -34,6 +40,23 @@ struct Index {
       })
     }
     .scrollable(false)
+    .vertical(
+      new BreakPointType({
+        sm: false,
+        md: false,
+        lg: true
+      }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+    )
+    .barHeight(
+      new BreakPointType({
+        sm: 60,
+        md: 60,
+        lg: 450
+      }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+    )
+    .divider({
+      strokeWidth: 1
+    })
     .onTabBarClick(index => {
       this.activeIndex = index
     })
