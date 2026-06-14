@@ -16,6 +16,10 @@
       /** 申请网络权限 **/
       {
         "name": "ohos.permission.INTERNET"
+      },
+      /** 获取设备网络信息 **/
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
       }
     ],
     "abilities": [
