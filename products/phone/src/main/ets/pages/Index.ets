@@ -19,7 +19,7 @@ struct Index {
   breakPointObject = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
 
   build() {
-    Tabs({ barPosition: new BreakPointType({
+    Tabs({ index: this.activeIndex!!, barPosition: new BreakPointType({
       sm: BarPosition.End,
       md: BarPosition.End,
       lg: BarPosition.Start

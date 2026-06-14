@@ -12,6 +12,12 @@
     "deliveryWithInstall": true,
     "installationFree": false,
     "pages": "$profile:main_pages",
+    "requestPermissions": [
+      /** 申请网络权限 **/
+      {
+        "name": "ohos.permission.INTERNET"
+      }
+    ],
     "abilities": [
       {
         "name": "PhoneAbility",
