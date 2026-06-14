@@ -28,7 +28,59 @@
   "modules": [
     {
       "name": "phone",
-      "srcPath": "./phone",
+      "srcPath": "./products/phone",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "basic",
+      "srcPath": "./commons/basic",
+    },
+    {
+      "name": "homepage",
+      "srcPath": "./features/homepage",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "category",
+      "srcPath": "./features/category",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "cart",
+      "srcPath": "./features/cart",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mine",
+      "srcPath": "./features/mine",
       "targets": [
         {
           "name": "default",
