@@ -1,12 +1,48 @@
-/node_modules
-/oh_modules
-/local.properties
-/.idea
-**/build
-/.hvigor
-.cxx
-/.clangd
-/.clang-format
-/.clang-tidy
-**/.test
-/.appanalyzer
+# =========================
+# dependencies
+# =========================
+node_modules/
+oh_modules/
+
+# =========================
+# build output
+# =========================
+build/
+**/build/
+.hvigor/
+.hvigor-cache/
+.cxx/
+
+# =========================
+# IDE
+# =========================
+.idea/
+.vscode/
+
+# =========================
+# system / local config
+# =========================
+local.properties
+
+# =========================
+# HarmonyOS / ohpm lock
+# =========================
+**/.oh-package-lock.json5
+
+# =========================
+# clang / native tools
+# =========================
+.clangd/
+.clang-format
+.clang-tidy
+
+# =========================
+# test / analysis
+# =========================
+**/.test/
+.appanalyzer/
+
+# =========================
+# logs
+# =========================
+*.log
