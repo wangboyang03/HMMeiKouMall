@@ -6,6 +6,10 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "basic": "file:../../commons/basic"
+    "basic": "file:../../commons/basic",
+    "homepage": "file:../../features/homepage",
+    "cart": "file:../../features/cart",
+    "category": "file:../../features/category",
+    "mine": "file:../../features/mine"
   }
 }

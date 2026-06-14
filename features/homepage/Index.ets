@@ -1,1 +1,1 @@
-export { add } from './src/main/ets/utils/Calc';
+export { HomePageView } from './src/main/ets/views/HomePageView';
