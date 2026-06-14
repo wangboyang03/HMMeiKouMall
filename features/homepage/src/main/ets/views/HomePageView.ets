@@ -79,6 +79,14 @@ export struct HomePageView {
     })
   }
 
+  getSpaceValue() {
+    return new BreakPointType({
+      sm: 14,
+      md: 36,
+      lg: 72
+    }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+  }
+
   aboutToAppear(): void {
     // mock数据
     this.mockData()
@@ -176,7 +184,7 @@ export struct HomePageView {
         // 分类
         Column({ space: 10 }) {
           // 小分类
-          List({ space: 16 }) {
+          List({ space: this.getSpaceValue()}) {
             ForEach(this.categories, (item: CategoryItem) => {
               ListItem() {
                 Column() {
@@ -217,7 +225,7 @@ export struct HomePageView {
               Image($r('app.media.home_cmd_inner'))
                 .width(86)
                 .height(116)
-              List({ space: 10 }) {
+              List({ space: this.getSpaceValue()}) {
                 ForEach(this.saleGoods, (item: GoodsItem) => {
                   ListItem() {
                     DiscountGoods({ goods: item })
@@ -266,7 +274,7 @@ export struct HomePageView {
             Image($r('app.media.home_new'))
               .width(146)
               .height(19)
-            List({ space: 10 }) {
+            List({ space: this.getSpaceValue()}) {
               ForEach(this.newGoods, (item: GoodsItem) => {
                 ListItem() {
                   DiscountGoods({ type: DiscountType.NEW, goods: item })
@@ -293,7 +301,13 @@ export struct HomePageView {
               }
             })
           }
-          .columnsTemplate('1fr 1fr')
+          .columnsTemplate(
+            new BreakPointType({
+              sm: '1fr 1fr',
+              md: '1fr 1fr 1fr',
+              lg: '1fr 1fr 1fr 1fr'
+            }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
+          )
           .columnsGap(8)
           .rowsGap(10)
         }
