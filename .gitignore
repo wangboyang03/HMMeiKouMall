@@ -28,6 +28,7 @@ local.properties
 # HarmonyOS / ohpm lock
 # =========================
 **/.oh-package-lock.json5
+build-profile.json5
 
 # =========================
 # clang / native tools
