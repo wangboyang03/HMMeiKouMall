@@ -27,3 +27,26 @@ export enum DiscountType {
   DISCOUNT,
   NEW
 }
+
+/**
+ * 特惠推荐的接口
+ */
+export interface HotResult {
+  id: string;
+  subTypes: SubType[];
+  title: string;
+}
+
+export interface SubType {
+  goodsItems: GoodsItems;
+  id: string;
+  title: string;
+}
+
+export interface GoodsItems {
+  counts: number;
+  items: GoodsItem[];
+  page: number;
+  pages: number;
+  pageSize: number;
+}

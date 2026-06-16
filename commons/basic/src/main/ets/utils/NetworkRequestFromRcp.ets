@@ -1,7 +1,6 @@
 import { rcp } from '@kit.RemoteCommunicationKit'
 import { Constants } from '../Constants'
 import { ResponseData } from '../models'
-import { Logger } from './Logger'
 
 /**
  * 请求拦截器
@@ -39,32 +38,32 @@ class RcpResponseInterceptor implements rcp.Interceptor {
   })
 
 export class NetworkRequestUtil {
-  get<T>(url: string, params?: object): Promise<T>{
+  static get<T>(url: string, params?: object): Promise<T>{
     return NetworkRequestUtil.transformResponseData<T>(
       session.get(url + '?' + NetworkRequestUtil.paramsToQueryString(params))
     )
   }
 
-  post<T>(url: string, data?: object): Promise<T> {
+  static post<T>(url: string, data?: object): Promise<T> {
     return NetworkRequestUtil.transformResponseData<T>(
       session.post(url, data)
     )
   }
 
-  put<T>(url:string, data?: object): Promise<T> {
+  static put<T>(url:string, data?: object): Promise<T> {
     return NetworkRequestUtil.transformResponseData<T>(
       session.put(url, data)
     )
   }
 
-  delete<T>(url:string, params?: object, data?: object): Promise<T> | undefined {
+  static delete<T>(url:string, params?: object, data?: object): Promise<T> | undefined {
     const request = new rcp.Request(url + '?' + NetworkRequestUtil.paramsToQueryString(params), 'DELETE', {}, data)
     return NetworkRequestUtil.transformResponseData<T>(
       session.fetch(request)
     )
   }
 
-  patch<T>(url:string, data?: object): Promise<T> {
+  static patch<T>(url:string, data?: object): Promise<T> {
     const request = new rcp.Request(url, 'PATCH', {}, data)
     return NetworkRequestUtil.transformResponseData<T>(
       session.fetch(request)
@@ -91,7 +90,7 @@ export class NetworkRequestUtil {
     // 2.转换数据
     const result = data.toJSON() as ResponseData<T>
     if (result.code == Constants.SUCCESS_CODE) {
-      return result.data // 请求成功 响应成功
+      return result.result // 请求成功 响应成功
     }
     return Promise.reject(result.message) // 请求成功 响应失败
   }

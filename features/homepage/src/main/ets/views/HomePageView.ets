@@ -2,6 +2,7 @@ import { AppSafeArea, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, 
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
+import { getBannerDataApi, getCategoryApi, getHotResultApi, getInVogueApi, getOneStopApi, getNewGoodsApi } from "../api"
 
 @ComponentV2
 export struct HomePageView {
@@ -23,54 +24,16 @@ export struct HomePageView {
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
 
   // 生成模拟数据
-  mockData() {
-    this.banners = new Array(6).fill({
-      id: "42",
-      imgUrl: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/banner/nuandong_sj.png",
-      hrefUrl: "/category/1181622006",
-      type: "1"
-    })
-
-    this.categories = new Array(10).fill({
-      id: "1181622001",
-      name: "气质女装",
-      picture: "https://yjy-teach-oss.oss-cn-beijing.aliyuncs.com/meikou/c1/qznz.png"
-    })
-
-    this.saleGoods = new Array(6).fill({
-      "id": "1111002",
-      "name": "剪出精致感，金致圆柄复古剪刀",
-      "desc": "轻薄设计，简约大方",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/4c6a9c8a579b00e5e9c7b002d15a33a2.jpg",
-      "orderNum": 172
-    },)
-
-    this.hotGoods = new Array(8).fill({
-      "id": "1135059",
-      "name": "手工八年老陈醋500毫升",
-      "desc": "地道醇香，醋酸浓郁",
-      "price": "30.00",
-      "picture": "https://yanxuan-item.nosdn.127.net/77da20e77b02830a26f931901ac1a9e0.png",
-      "orderNum": 147
-    },)
-    this.oneGoods = new Array(8).fill({
-      "id": "1135079",
-      "name": "免浸泡，12种谷物一次同享，五谷米400克",
-      "desc": "无需浸泡，同煮同熟",
-      "price": "9.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/bfe70bd66efe94f2f18061c707d2a097.png",
-      "orderNum": 144
-    })
-    this.newGoods = new Array(8).fill({
-      "id": "4027998",
-      "name": "亮碟多效合一洗涤块495g",
-      "desc": "洗碗机专用，强力去污",
-      "price": "69.90",
-      "picture": "https://yanxuan-item.nosdn.127.net/e07c2b63765cf9f4a46d489c6e09c1c1.jpg",
-      "orderNum": 643
-    })
-
+  async getHomepageData() {
+    this.banners = await getBannerDataApi()
+    this.categories = await getCategoryApi()
+    const hotResultData = await getHotResultApi()
+    this.saleGoods = hotResultData.subTypes?.[0]?.goodsItems.items ?? []
+    const inVogueData = await getInVogueApi()
+    this.hotGoods = inVogueData.subTypes?.[0]?.goodsItems.items ?? []
+    const oneStopData = await getOneStopApi()
+    this.oneGoods = oneStopData.subTypes?.[0]?.goodsItems.items ?? []
+    this.newGoods = await getNewGoodsApi()
     this.recommendGoods = new Array(8).fill({
       "id": "4033959",
       "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
@@ -89,8 +52,8 @@ export struct HomePageView {
   }
 
   aboutToAppear(): void {
-    // mock数据
-    this.mockData()
+    // 获取首页接口数据
+    this.getHomepageData()
 
   }
 
