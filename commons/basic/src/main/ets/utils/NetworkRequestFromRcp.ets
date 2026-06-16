@@ -76,7 +76,7 @@ export class NetworkRequestUtil {
    */
   private static paramsToQueryString(params?: object) {
     if (params) {
-      Object.keys(params).filter(key => !!params[key]).map(key => `${key}=${params[key]}`).join('&')
+      return Object.keys(params).filter(key => !!params[key]).map(key => `${key}=${params[key]}`).join('&')
     }
     return ''
   }

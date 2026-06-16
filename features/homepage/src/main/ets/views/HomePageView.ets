@@ -2,7 +2,7 @@ import { AppSafeArea, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, 
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
-import { getBannerDataApi, getCategoryApi, getHotResultApi, getInVogueApi, getOneStopApi, getNewGoodsApi } from "../api"
+import { getBannerDataApi, getCategoryApi, getHotResultApi, getInVogueApi, getOneStopApi, getNewGoodsApi, getRecommendApi } from "../api"
 
 @ComponentV2
 export struct HomePageView {
@@ -18,12 +18,16 @@ export struct HomePageView {
   @Local oneGoods: GoodsItem[] = []
   // 新鲜好物
   @Local newGoods: GoodsItem[] = []
-  // 猜喜
+  // 猜喜推荐
   @Local recommendGoods: GoodsItem[] = []
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   @Local yOffset: number = 0 // scroll滚动列表滚动的偏移量
   @Local searchOpacity: number = 0 // 搜索框透明度
+  @Local listPage: number = 1 // 推荐区域页面数量
+  @Local isLoading: boolean = false // 是否正在加载 正在请求中
+  @Local isFinished: boolean = false // 是否已经加载完成 没有数据了
+  promptAction = this.getUIContext().getPromptAction()
 
   /**
    * 获取首页数据
@@ -53,13 +57,13 @@ export struct HomePageView {
     // const oneStopData = await getOneStopApi()
     // this.oneGoods = oneStopData.subTypes?.[0]?.goodsItems.items ?? []
     // this.newGoods = await getNewGoodsApi()
-    this.recommendGoods = new Array(8).fill({
-      "id": "4033959",
-      "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
-      "price": 329,
-      "picture": "https://yanxuan-item.nosdn.127.net/937a8e46a9284e8f7e00e13911ecfbe7.png",
-      "payCount": 0
-    })
+    // this.recommendGoods = new Array(8).fill({
+    //   "id": "4033959",
+    //   "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
+    //   "price": 329,
+    //   "picture": "https://yanxuan-item.nosdn.127.net/937a8e46a9284e8f7e00e13911ecfbe7.png",
+    //   "payCount": 0
+    // })
   }
 
   getSpaceValue() {
@@ -70,8 +74,24 @@ export struct HomePageView {
     }).getValue(this.breakPointObject?.breakPoint ?? BreakPointEnum.SM)
   }
 
+  async getRecommendListData() {
+    const list = await getRecommendApi({
+      limit: this.listPage * 10
+    })
+    // Logger.info('page=', this.listPage, 'length=', list.length)
+    // 请求十条数据 返回10条 认为还有数据 如果<10条 认为请求完毕了
+    if (list.length == this.listPage * 10) {
+      this.listPage++
+    } else {
+      this.isFinished = true
+      this.promptAction.showToast({message: "没有更多数据了"})
+    }
+    this.recommendGoods.push(...list)
+  }
+
   aboutToAppear(): void {
     this.getHomepageData()
+    this.getRecommendListData()
   }
 
   @Builder DiscountBuilder(params: Params) {
@@ -316,6 +336,13 @@ export struct HomePageView {
           } else {
             this.searchOpacity = 1
           }
+        }
+      })
+      .onReachEnd(async ()=>{
+        if (!this.isLoading && !this.isFinished) {
+          this.isLoading = true // 上车先把车门焊死
+          await this.getRecommendListData()
+          this.isLoading = false // 把门打开
         }
       })
 

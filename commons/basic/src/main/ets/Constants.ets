@@ -18,4 +18,5 @@ export class Constants {
   static readonly HOT_INVOGUE_API = "hot/inVogue"  // 爆款推荐
   static readonly ONESTOP_API = "hot/oneStop" // 一站买全
   static readonly HOME_NEW_API = "home/new" // 新鲜好物
+  static readonly HOME_RECOMMEND_API = "home/recommend" // 猜喜推荐
 }

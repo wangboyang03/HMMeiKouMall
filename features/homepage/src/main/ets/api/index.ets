@@ -1,5 +1,5 @@
 import { CategoryItem, Constants, GoodsItem, Logger, NetworkRequestUtil } from "basic"
-import { Banner, HotResult } from "../models"
+import { Banner, HotResult, RecommendRequest } from "../models"
 
 /**
  * 获取轮播图数据
@@ -30,3 +30,8 @@ export const  getOneStopApi = () => NetworkRequestUtil.get<HotResult>(Constants.
  * 获取新鲜好物
  */
 export const getNewGoodsApi = () => NetworkRequestUtil.get<GoodsItem[]>(Constants.HOME_NEW_API)
+
+/**
+ * 获取猜喜推荐数据
+ */
+export const getRecommendApi = (params: RecommendRequest) => NetworkRequestUtil.get<GoodsItem[]>(Constants.HOME_RECOMMEND_API, params)

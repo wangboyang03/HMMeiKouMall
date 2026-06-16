@@ -50,3 +50,10 @@ export interface GoodsItems {
   pages: number;
   pageSize: number;
 }
+
+/**
+ * 获取首页猜喜区域请求参数
+ */
+export interface RecommendRequest {
+  limit: number
+}
