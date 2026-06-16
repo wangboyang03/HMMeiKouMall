@@ -21,7 +21,7 @@ export struct HomePageView {
   // 新鲜好物
   @Local newGoods: GoodsItem[] = []
   // 猜喜推荐
-  // @Local recommendGoods: GoodsItem[] = []
+  @Local recommendGoods: GoodsItem[] = []
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   @Local yOffset: number = 0 // scroll滚动列表滚动的偏移量
@@ -31,7 +31,7 @@ export struct HomePageView {
   @Local isFinished: boolean = false // 是否已经加载完成 没有数据了
   promptAction = this.getUIContext().getPromptAction()
   // 推荐列表使用LazyForEach的数据源对象
-  recommendListData = new BasicDataSource<GoodsItem>()
+  // recommendListData = new BasicDataSource<GoodsItem>()
 
   /**
    * 获取首页数据
@@ -91,7 +91,8 @@ export struct HomePageView {
       this.promptAction.showToast({message: "没有更多数据了"})
     }
     // this.recommendGoods.push(...list)
-    this.recommendListData.reloadDataFromNewArray(list)
+    // this.recommendListData.reloadDataFromNewArray(list)
+    this.recommendGoods = list
   }
 
   aboutToAppear(): void {
@@ -304,11 +305,13 @@ export struct HomePageView {
             // 猜喜
             WaterFlow() {
               // ForEach(this.recommendGoods, (item: GoodsItem) => {
-              LazyForEach(this.recommendListData, (item: GoodsItem) => {
+              // LazyForEach(this.recommendListData, (item: GoodsItem) => {
+              Repeat(this.recommendGoods).each((object: RepeatItem<GoodsItem>)=> {
                 FlowItem() {
-                  Goods({ goods: item })
+                  Goods({ goods: object.item })
                 }
-              })
+              }).virtualScroll({totalCount: this.recommendGoods.length, reusable:true})
+                .key((item, index)=> `${index}_${JSON.stringify(item)}`)
             }
             .columnsTemplate(
               new BreakPointType({
