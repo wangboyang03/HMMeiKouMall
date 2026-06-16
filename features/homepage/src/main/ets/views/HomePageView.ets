@@ -1,4 +1,6 @@
-import { AppSafeArea, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem, Logger } from "basic"
+import { AppSafeArea,
+  BasicDataSource,
+  BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem, Logger } from "basic"
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
@@ -19,7 +21,7 @@ export struct HomePageView {
   // 新鲜好物
   @Local newGoods: GoodsItem[] = []
   // 猜喜推荐
-  @Local recommendGoods: GoodsItem[] = []
+  // @Local recommendGoods: GoodsItem[] = []
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   @Local yOffset: number = 0 // scroll滚动列表滚动的偏移量
@@ -28,6 +30,8 @@ export struct HomePageView {
   @Local isLoading: boolean = false // 是否正在加载 正在请求中
   @Local isFinished: boolean = false // 是否已经加载完成 没有数据了
   promptAction = this.getUIContext().getPromptAction()
+  // 推荐列表使用LazyForEach的数据源对象
+  recommendListData = new BasicDataSource<GoodsItem>()
 
   /**
    * 获取首页数据
@@ -86,7 +90,8 @@ export struct HomePageView {
       this.isFinished = true
       this.promptAction.showToast({message: "没有更多数据了"})
     }
-    this.recommendGoods.push(...list)
+    // this.recommendGoods.push(...list)
+    this.recommendListData.reloadDataFromNewArray(list)
   }
 
   aboutToAppear(): void {
@@ -298,7 +303,8 @@ export struct HomePageView {
 
             // 猜喜
             WaterFlow() {
-              ForEach(this.recommendGoods, (item: GoodsItem) => {
+              // ForEach(this.recommendGoods, (item: GoodsItem) => {
+              LazyForEach(this.recommendListData, (item: GoodsItem) => {
                 FlowItem() {
                   Goods({ goods: item })
                 }
