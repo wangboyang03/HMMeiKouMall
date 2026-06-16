@@ -32,11 +32,13 @@ export struct HomePageView {
   // recommendListData = new BasicDataSource<GoodsItem>()
   @Local loadingAnimation: boolean = false // 加载数据动画
   @Local isRefreshing: boolean = false // 是否正在下拉刷新
+  @Local indicatorText: string = '' // 下拉刷新指示器文本
+
   /**
    * 获取首页数据
    */
-  async getHomepageData() {
-    this.loadingAnimation = true
+  async getHomepageData(showLoading: boolean = true) {
+    this.loadingAnimation = showLoading
     const result = await Promise.allSettled([getBannerDataApi(), getCategoryApi(), getHotResultApi(), getInVogueApi(), getOneStopApi(), getNewGoodsApi()])
     const handlers = [
       (value: Banner[]) => (this.banners = value),
@@ -132,11 +134,26 @@ export struct HomePageView {
     .borderRadius(8)
   }
 
+  @Builder getRefreshIndicator() {
+    Row({ space: 10 }) {
+      Text(this.indicatorText)
+        .fontSize(12)
+      ProgressLoading({
+        progressWidth: 20,
+        strokeWidth: 2,
+        color: $r('app.color.black')
+      })
+    }
+    .width('100%')
+    .height(60)
+    .justifyContent(FlexAlign.Center)
+  }
+
   build() {
     if (!!this.loadingAnimation) {
       LoadingAnimator()
     } else {
-      Refresh({ refreshing: this.isRefreshing!! }) {
+      Refresh({ refreshing: this.isRefreshing!!, builder: this.getRefreshIndicator() }) {
         Stack({alignContent: Alignment.Top}) {
           // 主滚动列表
           Scroll() {
@@ -393,9 +410,28 @@ export struct HomePageView {
         this.listPage = 1 // 重置首页推荐列表为起始值
         this.isFinished = false // 防止请求完成后没有更多数据
         // 重新请求数据
-        await this.getHomepageData()
+        await this.getHomepageData(false)
         await this.getRecommendListData()
         this.isRefreshing = false // 请求完成便于下次请求
+      })
+      .onStateChange((state) => {
+        switch (state) {
+          case RefreshStatus.Inactive:
+            this.indicatorText = '下拉刷新'
+            break;
+          case RefreshStatus.Drag:
+            this.indicatorText = '继续下拉'
+            break;
+          case RefreshStatus.OverDrag:
+            this.indicatorText = '松手刷新'
+            break;
+          case RefreshStatus.Refresh:
+            this.indicatorText = '正在刷新'
+            break;
+          case RefreshStatus.Done:
+            this.indicatorText = '刷新完成'
+            break;
+        }
       })
     }
   }
