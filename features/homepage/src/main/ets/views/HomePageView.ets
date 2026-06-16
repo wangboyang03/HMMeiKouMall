@@ -1,6 +1,6 @@
 import { AppSafeArea, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem } from "basic"
 import { DiscountGoods, Goods } from "../components"
-import { Banner, Params, DiscountType } from "../models"
+import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { getBannerDataApi, getCategoryApi, getHotResultApi, getInVogueApi, getOneStopApi, getNewGoodsApi } from "../api"
 
@@ -23,17 +23,34 @@ export struct HomePageView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
 
-  // 生成模拟数据
+  /**
+   * 获取首页数据
+   */
   async getHomepageData() {
-    this.banners = await getBannerDataApi()
-    this.categories = await getCategoryApi()
-    const hotResultData = await getHotResultApi()
-    this.saleGoods = hotResultData.subTypes?.[0]?.goodsItems.items ?? []
-    const inVogueData = await getInVogueApi()
-    this.hotGoods = inVogueData.subTypes?.[0]?.goodsItems.items ?? []
-    const oneStopData = await getOneStopApi()
-    this.oneGoods = oneStopData.subTypes?.[0]?.goodsItems.items ?? []
-    this.newGoods = await getNewGoodsApi()
+    const result = await Promise.allSettled([getBannerDataApi(), getCategoryApi(), getHotResultApi(), getInVogueApi(), getOneStopApi(), getNewGoodsApi()])
+    const handlers = [
+      (value: Banner[]) => (this.banners = value),
+      (value: CategoryItem[]) => (this.categories = value),
+      (value: HotResult) => (this.saleGoods = value?.subTypes?.[0]?.goodsItems?.items ?? []),
+      (value: HotResult) => (this.hotGoods = value?.subTypes?.[0]?.goodsItems?.items ?? []),
+      (value: HotResult) => (this.oneGoods = value?.subTypes?.[0]?.goodsItems?.items ?? []),
+      (value: GoodsItem[]) => (this.newGoods = value)
+    ]
+    result.forEach((item, index) => {
+      if (item.status == 'fulfilled') {
+        handlers[index]?.(item.value as ESObject)
+      }
+    })
+
+    // this.banners = await getBannerDataApi()
+    // this.categories = await getCategoryApi()
+    // const hotResultData = await getHotResultApi()
+    // this.saleGoods = hotResultData.subTypes?.[0]?.goodsItems.items ?? []
+    // const inVogueData = await getInVogueApi()
+    // this.hotGoods = inVogueData.subTypes?.[0]?.goodsItems.items ?? []
+    // const oneStopData = await getOneStopApi()
+    // this.oneGoods = oneStopData.subTypes?.[0]?.goodsItems.items ?? []
+    // this.newGoods = await getNewGoodsApi()
     this.recommendGoods = new Array(8).fill({
       "id": "4033959",
       "name": "3秒快速拆琴轻松保养odin奥丁12半音阶口琴",
@@ -52,9 +69,7 @@ export struct HomePageView {
   }
 
   aboutToAppear(): void {
-    // 获取首页接口数据
     this.getHomepageData()
-
   }
 
   @Builder DiscountBuilder(params: Params) {
