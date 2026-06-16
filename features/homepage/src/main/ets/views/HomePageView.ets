@@ -1,6 +1,4 @@
-import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem,
-  LoadingAnimator,
-  Logger } from "basic"
+import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem, LoadingAnimator, Logger, ProgressLoading } from "basic"
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
