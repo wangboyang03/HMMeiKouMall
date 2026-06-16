@@ -1,4 +1,7 @@
-import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem, GoodsItem, LoadingAnimator, Logger, ProgressLoading } from "basic"
+import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem,
+  Constants,
+  GoodsItem, LoadingAnimator, Logger, ProgressLoading,
+  SoundPool } from "basic"
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
@@ -425,6 +428,7 @@ export struct HomePageView {
         // 重新请求数据
         await this.getHomepageData(false)
         await this.getRecommendListData()
+        SoundPool.getInstance().play(getContext(this), Constants.HOMEPAGE_MODULE_NAME, Constants.REFRESH_PROMPT_SOUND)
         this.isRefreshing = false // 请求完成便于下次请求
       })
       .onStateChange((state) => {

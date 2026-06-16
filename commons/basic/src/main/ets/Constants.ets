@@ -11,6 +11,10 @@ export class Constants {
   static readonly SUCCESS_CODE = 1 // 请求成功码
   static readonly TIME_OUT = 10000 // 请求超时时间
 
+  // 包相关信息
+  static readonly HOMEPAGE_MODULE_NAME = "homepage" // 首页模块名称
+  static readonly REFRESH_PROMPT_SOUND = "sound.mp3" // 刷新提示音
+
   // 接口地址
   static readonly BANNER_API = "home/banner" // 首页轮播图
   static readonly CATEGORY_API = "home/category/head" // 首页分类
