@@ -33,6 +33,7 @@ export struct HomePageView {
   @Local loadingAnimation: boolean = false // 加载数据动画
   @Local isRefreshing: boolean = false // 是否正在下拉刷新
   @Local indicatorText: string = '' // 下拉刷新指示器文本
+  scroller: Scroller = new Scroller() // 用于整体列表滚动控制器
 
   /**
    * 获取首页数据
@@ -156,7 +157,7 @@ export struct HomePageView {
       Refresh({ refreshing: this.isRefreshing!!, builder: this.getRefreshIndicator() }) {
         Stack({alignContent: Alignment.Top}) {
           // 主滚动列表
-          Scroll() {
+          Scroll(this.scroller) {
             Column() {
               // 轮播图 + 搜索
               Stack({ alignContent: Alignment.Top }) {
@@ -404,6 +405,18 @@ export struct HomePageView {
             direction: GradientDirection.Bottom,
             colors: [["#ff949dec", 0], ["#fff", 1]]
           })
+
+          Image($r('app.media.ic_public_top'))
+            .width(50)
+            .padding(10)
+            .backgroundColor($r('app.color.white'))
+            .borderRadius(25)
+            .opacity(this.searchOpacity)
+            .position({
+              right: 20,
+              bottom: 20
+            })
+            .onClick(() => this.scroller.scrollEdge(Edge.Top))
         }
       }
       .onRefreshing(async () => {
