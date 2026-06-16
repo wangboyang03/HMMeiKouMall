@@ -45,23 +45,37 @@ export class NetworkRequestUtil {
     )
   }
 
-  post<T>(url: string, data?: object) {
-
+  post<T>(url: string, data?: object): Promise<T> {
+    return NetworkRequestUtil.transformResponseData<T>(
+      session.post(url, data)
+    )
   }
 
-  put<T>(url:string, data?: object) {
-
+  put<T>(url:string, data?: object): Promise<T> {
+    return NetworkRequestUtil.transformResponseData<T>(
+      session.put(url, data)
+    )
   }
 
-  delete<T>(url:string, params?: object, data?: object) {
+  delete<T>(url:string, params?: object, data?: object): Promise<T> | undefined {
+    const request = new rcp.Request(url + '?' + NetworkRequestUtil.paramsToQueryString(params), 'DELETE', {}, data)
+    return NetworkRequestUtil.transformResponseData<T>(
+      session.fetch(request)
+    )
+  }
 
+  patch<T>(url:string, data?: object): Promise<T> {
+    const request = new rcp.Request(url, 'PATCH', {}, data)
+    return NetworkRequestUtil.transformResponseData<T>(
+      session.fetch(request)
+    )
   }
 
   /**
    * 请求时可能会携带参数 页面会把请求参数通过对象传递 需要将对象转成能够拼接到url的字符串
    * {name:'1', age:'2'} -> name=1&age=2
    */
-  private static paramsToQueryString(params: object) {
+  private static paramsToQueryString(params?: object) {
     if (params) {
       Object.keys(params).filter(key => !!params[key]).map(key => `${key}=${params[key]}`).join('&')
     }
