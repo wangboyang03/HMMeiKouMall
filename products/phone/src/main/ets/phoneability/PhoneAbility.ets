@@ -2,12 +2,14 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { ScreenAreaManager, ScreenManager } from 'basic';
+import { HMRouterMgr } from '@hadss/hmrouter';
 
 const DOMAIN = 0x0000;
 
 export default class PhoneAbility extends UIAbility {
   screenManager?: ScreenManager
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    HMRouterMgr.init({context: this.context}) // 初始化HMRouter
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
     } catch (err) {
