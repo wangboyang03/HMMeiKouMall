@@ -1,7 +1,9 @@
+import { HMRouterMgr } from "@hadss/hmrouter"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { AppCategoryData, AppSafeArea, BreakPoint,
   BreakPointType,
-  CategoryItem, CategoryItemChild, NavigationBar } from "basic"
+  CategoryItem, CategoryItemChild, NavigationBar,
+  StackAddress } from "basic"
 
 @ComponentV2
 export struct CategoryView {
@@ -16,7 +18,10 @@ export struct CategoryView {
         title: '分类',
         showLeftIcon: false,
         showRightIcon: true,
-        rightIcon: $r("app.media.ic_public_search")
+        rightIcon: $r("app.media.ic_public_search"),
+        onRightClick: () => HMRouterMgr.push({
+          pageUrl: StackAddress.SEARCH_PAGE
+        })
       })
       Row() {
         Column() {

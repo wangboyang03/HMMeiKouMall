@@ -24,3 +24,9 @@ export class Constants {
   static readonly HOME_NEW_API = "home/new" // 新鲜好物
   static readonly HOME_RECOMMEND_API = "home/recommend" // 猜喜推荐
 }
+
+export class StackAddress {
+  static readonly MAIN_PAGE = "HomePage"
+  static readonly MAIN_PAGE_ID = "MainNavigation"
+  static readonly SEARCH_PAGE = "SearchView"
+}

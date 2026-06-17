@@ -3,11 +3,13 @@ import {
   AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem,
   Constants,
   GoodsItem, LoadingAnimator, Logger, ProgressLoading,
-  SoundPool } from "basic"
+  SoundPool,
+  StackAddress} from "basic"
 import { DiscountGoods, Goods } from "../components"
 import { Banner, Params, DiscountType, HotResult } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { getBannerDataApi, getCategoryApi, getHotResultApi, getInVogueApi, getOneStopApi, getNewGoodsApi, getRecommendApi } from "../api"
+import { HMRouterMgr } from "@hadss/hmrouter"
 
 @ComponentV2
 export struct HomePageView {
@@ -218,6 +220,9 @@ export struct HomePageView {
                   .padding({ left: 12 })
                 }
                 .padding({ left: 16, right: 16, top: this.safeAreaValue?.topHeight })
+                .onClick(() => HMRouterMgr.push({
+                  pageUrl: StackAddress.SEARCH_PAGE
+                }))
               }
               .width('100%')
 
@@ -415,6 +420,9 @@ export struct HomePageView {
             direction: GradientDirection.Bottom,
             colors: [["#ff949dec", 0], ["#fff", 1]]
           })
+          .onClick(() => HMRouterMgr.push({
+            pageUrl: StackAddress.SEARCH_PAGE
+          }))
 
           Image($r('app.media.ic_public_top'))
             .width(50)
