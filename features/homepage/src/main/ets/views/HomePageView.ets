@@ -1,4 +1,6 @@
-import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem,
+import {
+  AppCategoryData,
+  AppSafeArea, BasicDataSource, BreakPoint, BreakPointEnum, BreakPointType, CategoryItem,
   Constants,
   GoodsItem, LoadingAnimator, Logger, ProgressLoading,
   SoundPool } from "basic"
@@ -74,6 +76,11 @@ export struct HomePageView {
     //   "picture": "https://yanxuan-item.nosdn.127.net/937a8e46a9284e8f7e00e13911ecfbe7.png",
     //   "payCount": 0
     // })
+    // 将分类数据进行全局共享
+    let categoryObject = AppStorageV2.connect(AppCategoryData, () => new AppCategoryData())
+    if (!!categoryObject) {
+      categoryObject.category = this.categories
+    }
   }
 
   getSpaceValue() {
