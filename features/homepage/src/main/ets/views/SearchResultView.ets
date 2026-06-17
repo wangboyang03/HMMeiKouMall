@@ -1,7 +1,7 @@
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointType, GoodsItem, StackAddress } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
-import { SearchParams, SortCompAttr, SortField, SortMethod } from '../models'
+import { SearchParams, SearchRouterParam, SortCompAttr, SortField, SortMethod } from '../models'
 import { Goods, SearchSortItem } from '../components'
 
 
@@ -24,7 +24,8 @@ export struct SearchResultView {
   scroller = new Scroller()
 
   aboutToAppear(): void {
-
+    const params = HMRouterMgr.getCurrentParam() as SearchRouterParam
+    this.getUIContext().getPromptAction().openToast({message: JSON.stringify(params)})
   }
 
   build() {
@@ -37,10 +38,8 @@ export struct SearchResultView {
             .aspectRatio(1)
             .fillColor($r('app.color.white'))
             .margin(13)
-            .onClick(() => {
-              HMRouterMgr.pop()
-            })
-          Search({ placeholder: '商品关键字...', value: $$this.params.keyword })
+            .onClick(() => HMRouterMgr.pop())
+          Search({ placeholder: '商品关键字...', value: this.params.keyword!! })
             .searchIcon({ src: $r('app.media.ic_public_search'), color: $r('app.color.gray') })
             .placeholderColor($r('app.color.gray'))
             .placeholderFont({ size: 14 })
@@ -51,9 +50,7 @@ export struct SearchResultView {
             .margin(0)
             .height(36)
             .caretStyle({ color: $r('app.color.red') })
-            .onSubmit(() => {
-
-            })
+            .onSubmit(() => {})
         }
         .padding({ top: this.safeAreaValue?.topHeight, right: 16 })
         .linearGradient({

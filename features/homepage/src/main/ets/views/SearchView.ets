@@ -1,6 +1,7 @@
 import { AppSafeArea, StackAddress } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
+import { SearchRouterParam } from '../models'
 
 @HMRouter({ pageUrl: StackAddress.SEARCH_PAGE })
 @ComponentV2
@@ -31,7 +32,12 @@ export struct SearchView {
           .height(36)
           .caretStyle({ color: $r('app.color.red') })
           .defaultFocus(true)
-          .onSubmit((value) => {})
+          .onSubmit((value) => {
+            HMRouterMgr.push({
+              pageUrl: StackAddress.SEARCH_RESULT_PAGE,
+              param: { keyword: value } as SearchRouterParam
+            })
+          })
       }
       .padding({ top: this.safeAreaValue?.topHeight, right: 16 })
       .linearGradient({
