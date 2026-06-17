@@ -84,3 +84,9 @@ export interface SortCompAttr {
 export interface SearchRouterParam {
   keyword: string
 }
+
+// 定义搜索结果类型
+export interface SearchResult {
+  // conditions: 暂不需要
+  pageData: GoodsItems
+}

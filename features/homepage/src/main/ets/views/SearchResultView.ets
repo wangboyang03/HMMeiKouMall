@@ -3,6 +3,7 @@ import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointType, GoodsItem, St
 import { AppStorageV2 } from '@kit.ArkUI'
 import { SearchParams, SearchRouterParam, SortCompAttr, SortField, SortMethod } from '../models'
 import { Goods, SearchSortItem } from '../components'
+import { getSearchResultApi } from '../api'
 
 
 @HMRouter({ pageUrl: StackAddress.SEARCH_RESULT_PAGE })
@@ -23,9 +24,17 @@ export struct SearchResultView {
   // 控制器
   scroller = new Scroller()
 
+  async getSearchResultData() {
+    const res = await getSearchResultApi(this.params)
+    // 如果使用@ObservedV2+@Trace装饰的对象属性字段会被加上__ob_ 在请求拦截器做统一处理
+    this.lazyDataSource.reloadDataFromNewArray(res.pageData.items)
+  }
+
   aboutToAppear(): void {
     const params = HMRouterMgr.getCurrentParam() as SearchRouterParam
     this.getUIContext().getPromptAction().openToast({message: JSON.stringify(params)})
+    this.params.keyword = params.keyword
+    this.getSearchResultData()
   }
 
   build() {
