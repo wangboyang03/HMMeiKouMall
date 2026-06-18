@@ -34,4 +34,5 @@ export class StackAddress {
   static readonly SEARCH_PAGE = "SearchView"
   static readonly SEARCH_RESULT_PAGE = "SearchResultView"
   static readonly LOGIN_PAGE = "LoginView"
+  static readonly SETTING_PAGE = "SettingView"
 }

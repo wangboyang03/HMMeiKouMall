@@ -3,7 +3,6 @@ import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI"
 import { NavigationColumn } from "../components"
 import { HMRouterMgr } from "@hadss/hmrouter"
 
-
 @ComponentV2
 export struct MineView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
@@ -22,7 +21,9 @@ export struct MineView {
                 Image($r('app.media.ic_public_settings'))
                   .width(24)
                   .aspectRatio(1)
-                  .onClick(() => {})
+                  .onClick(() => HMRouterMgr.push({
+                    pageUrl: StackAddress.SETTING_PAGE
+                  }))
               }
             }
             .width('100%')

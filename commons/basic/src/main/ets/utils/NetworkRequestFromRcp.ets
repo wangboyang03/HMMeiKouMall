@@ -1,6 +1,9 @@
+import { HMRouterMgr } from '@hadss/hmrouter'
 import { rcp } from '@kit.RemoteCommunicationKit'
-import { Constants } from '../Constants'
-import { ResponseData } from '../models'
+import { UserAuth } from '.'
+import { Constants, StackAddress } from '../Constants'
+import { LoginResponseViewModel, ResponseData } from '../models'
+import { promptAction } from '@kit.ArkUI'
 
 /**
  * 请求拦截器
@@ -23,6 +26,15 @@ class RcpRequestInterceptor implements rcp.Interceptor {
 class RcpResponseInterceptor implements rcp.Interceptor {
   async intercept(context: rcp.RequestContext, next: rcp.RequestHandler): Promise<rcp.Response> {
     const res = await next.handle(context)
+
+    // 处理401问题
+    if (res.statusCode == 401) {
+      promptAction.openToast({message: '登录失效'})
+      UserAuth.getInstance().setUser({} as LoginResponseViewModel)
+      HMRouterMgr.push({
+        pageUrl: StackAddress.LOGIN_PAGE
+      })
+    }
     return res
   }
 }
