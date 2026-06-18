@@ -3,8 +3,7 @@ export interface LoginForm {
   password: string
 }
 
-@ObservedV2
-export class LoginFormViewModel implements LoginForm {
+@ObservedV2 export class LoginFormViewModel implements LoginForm {
   @Trace account: string = ""
   @Trace password: string = ""
 
