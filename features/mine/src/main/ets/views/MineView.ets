@@ -1,5 +1,5 @@
-import { AppSafeArea, BreakPoint, Constants, GuessingComponent, StackAddress } from "basic"
-import { AppStorageV2 } from "@kit.ArkUI"
+import { AppSafeArea, AppUserObject, BreakPoint, Constants, GuessingComponent, StackAddress } from "basic"
+import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI"
 import { NavigationColumn } from "../components"
 import { HMRouterMgr } from "@hadss/hmrouter"
 
@@ -8,6 +8,7 @@ import { HMRouterMgr } from "@hadss/hmrouter"
 export struct MineView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+  appUser?: AppUserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
 
   build() {
     Column() {
@@ -17,7 +18,7 @@ export struct MineView {
           Column() {
             Row() {
               Blank()
-              if (true) {
+              if (this.appUser?.User?.token) {
                 Image($r('app.media.ic_public_settings'))
                   .width(24)
                   .aspectRatio(1)
@@ -29,12 +30,12 @@ export struct MineView {
 
             Row({ space: 16 }) {
               // 头像
-              Image($r('app.media.ic_user_avatar'))
+              Image(this.appUser?.User?.avatar ?? $r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
                 .borderRadius(20)
-              if (false) {
-                Text("张三")
+              if (this.appUser?.User?.token) {
+                Text(this.appUser?.User?.nickname ?? this.appUser?.User?.account)
                   .fontColor($r('app.color.black'))
                   .fontWeight(500)
               } else {

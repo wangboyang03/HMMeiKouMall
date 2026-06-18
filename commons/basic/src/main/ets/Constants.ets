@@ -25,6 +25,7 @@ export class Constants {
   static readonly HOME_RECOMMEND_API = "home/recommend" // 猜喜推荐
   static readonly Search_Result_API = "search/all" // 搜索结果
   static readonly GUESS_LICK_API = "home/goods/guessLike" // 猜你喜欢
+  static readonly LOGIN_API = "login" // 登录-账号密码登录
 }
 
 export class StackAddress {

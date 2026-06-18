@@ -1,8 +1,9 @@
-import { AppSafeArea, NavigationBar, StackAddress } from 'basic'
+import { AppSafeArea, Logger, NavigationBar, StackAddress, UserAuth } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { LoginFormViewModel } from '../models'
+import { LoginRequestApi } from '../api'
 
 @Preview
 @HMRouter({ pageUrl: StackAddress.LOGIN_PAGE })
@@ -32,9 +33,15 @@ export struct LoginView {
 
   async onSubmit() {
     if (!this.agree) {
-      return this.getUIContext().getPromptAction().openToast({ message: '请先勾选协议' })
+      this.getUIContext().getPromptAction().openToast({ message: '请先勾选协议' })
     }
-    return null
+    try {
+      const res = await LoginRequestApi(this.loginForm)
+      UserAuth.getInstance().setUser(res)
+      HMRouterMgr.pop()
+    } catch (error) {
+      Logger.error(error)
+    }
   }
 
   @Styles form() {

@@ -1,5 +1,5 @@
 import { AppUserObject, LoginResponse, LoginResponseViewModel } from "../models"
-import { AppStorageV2 } from "@kit.ArkUI"
+import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI"
 
 export class UserAuth {
   private static sInstance: UserAuth
@@ -21,7 +21,7 @@ export class UserAuth {
    * @param User
    */
   setUser(User: LoginResponseViewModel) {
-    const UserObject = AppStorageV2.connect(AppUserObject, () => new AppUserObject())
+    const UserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
     if (UserObject) {
       UserObject.User = User
     }
@@ -32,7 +32,7 @@ export class UserAuth {
    * @returns
    */
   getUser() {
-    const UserObject = AppStorageV2.connect(AppUserObject, () => new AppUserObject())
+    const UserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
     if (UserObject) {
       return UserObject.User
     }
