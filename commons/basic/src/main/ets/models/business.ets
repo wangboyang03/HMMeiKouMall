@@ -1,3 +1,5 @@
+import { Type } from "@kit.ArkUI";
+
 export interface ResponseData<T> {
   code: number;
   message: string;
@@ -31,7 +33,8 @@ export interface LoginResponse {
   @Trace provinceCode: string = ""
   @Trace token: string = ""
 
-  constructor(models: LoginResponse) {
+  // 修饰的类不能有构造函数，所以需要去掉原来的构造函数
+  /*constructor(models: LoginResponse) {
     this.account = models.account
     this.avatar = models.avatar
     this.birthday = models.birthday
@@ -43,9 +46,10 @@ export interface LoginResponse {
     this.profession = models.profession
     this.provinceCode = models.provinceCode
     this.token = models.token
-  }
+  }*/
 }
 
 @ObservedV2 export class AppUserObject {
-  @Trace User: LoginResponseViewModel = new LoginResponseViewModel({} as LoginResponse)
+  // 当缓存的对象为复杂数据类型时 需要用@Type装饰器装饰这个类 保证不丢失
+  @Type(LoginResponseViewModel) @Trace User: LoginResponseViewModel = new LoginResponseViewModel()
 }
