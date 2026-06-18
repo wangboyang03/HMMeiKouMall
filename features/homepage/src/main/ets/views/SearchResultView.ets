@@ -12,7 +12,8 @@ export struct SearchResultView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   // 查询数据源
-  lazyDataSource: BasicDataSource<GoodsItem> = new BasicDataSource()
+  // lazyDataSource: BasicDataSource<GoodsItem> = new BasicDataSource()
+  @Local goodsList: GoodsItem[] = []
   // 查询参数
   params: SearchParams = new SearchParams()
   // 筛选条件
@@ -27,12 +28,13 @@ export struct SearchResultView {
   async getSearchResultData() {
     const res = await getSearchResultApi(this.params)
     // 如果使用@ObservedV2+@Trace装饰的对象属性字段会被加上__ob_ 在请求拦截器做统一处理
-    this.lazyDataSource.reloadDataFromNewArray(res.pageData.items)
+    // this.lazyDataSource.reloadDataFromNewArray(res.pageData.items)
+    this.goodsList = res.pageData.items
   }
 
   aboutToAppear(): void {
     const params = HMRouterMgr.getCurrentParam() as SearchRouterParam
-    this.getUIContext().getPromptAction().openToast({message: JSON.stringify(params)})
+    // this.getUIContext().getPromptAction().openToast({message: JSON.stringify(params)})
     this.params.keyword = params.keyword
     this.getSearchResultData()
   }
@@ -91,11 +93,13 @@ export struct SearchResultView {
 
         // 搜索商品列表
         WaterFlow({ scroller: this.scroller }) {
-          LazyForEach(this.lazyDataSource, (item: GoodsItem) => {
+          // LazyForEach(this.lazyDataSource, (item: GoodsItem) => {
+          Repeat(this.goodsList).each((object: RepeatItem<GoodsItem>) => {
             FlowItem() {
-              Goods({ goods: item, smallImage: true })
+              Goods({ goods: object.item, smallImage: true })
             }
-          })
+          }).virtualScroll() // 开启虚拟滚动
+            .key((item: GoodsItem, index: number) => `${index}_${JSON.stringify(item)}`)
         }
         .columnsTemplate(
           new BreakPointType({
