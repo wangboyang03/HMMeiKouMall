@@ -1,5 +1,7 @@
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BasicDataSource, BreakPoint, BreakPointType, GoodsItem, StackAddress } from 'basic'
+import { AppSafeArea, BasicDataSource, BreakPoint,
+  BreakPointEnum,
+  BreakPointType, GoodsItem, StackAddress } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { SearchParams, SearchRouterParam, SortCompAttr, SortField, SortMethod } from '../models'
 import { Goods, SearchSortItem } from '../components'
@@ -122,6 +124,23 @@ export struct SearchResultView {
           }).virtualScroll() // 开启虚拟滚动
             .key((item: GoodsItem, index: number) => `${index}_${JSON.stringify(item)}`)
         }
+        .columnsTemplate(
+          new BreakPointType({
+            sm: '1fr 1fr',
+            md: '1fr 1fr 1fr',
+            lg: '1fr 1fr 1fr 1fr'
+          }).getValue(this.breakPointObject.breakPoint)
+        )
+        .columnsGap(0.5)
+        .rowsGap(0.5)
+        .layoutWeight(1)
+        .onReachEnd(async () => {
+          if (!this.isLoading && !this.isFinished) {
+            this.isLoading = true
+            await this.getSearchResultData()
+            this.isLoading = false
+          }
+        })
       }
     }
   }
