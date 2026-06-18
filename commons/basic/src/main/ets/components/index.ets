@@ -1,3 +1,5 @@
 export * from './LoadingAnimator'
 export * from './ProgressLoading'
 export * from './NavigationBar'
+export * from './Goods'
+export * from './GuessingComponent'

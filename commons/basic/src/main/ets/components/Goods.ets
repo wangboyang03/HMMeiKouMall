@@ -1,4 +1,4 @@
-import { GoodsItem } from "basic"
+import { GoodsItem } from "../models"
 
 @ComponentV2
 export struct Goods {

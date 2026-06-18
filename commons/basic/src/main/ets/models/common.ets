@@ -35,3 +35,16 @@ export interface CategoryItemChild {
   name: string
   picture: ResourceStr
 }
+
+export interface GuessRequest {
+  page: number;
+  pageSize: number;
+}
+
+export interface GuessLikeResponse {
+  counts: number;
+  items: GoodsItem[];
+  page: number;
+  pages: number;
+  pageSize: number;
+}

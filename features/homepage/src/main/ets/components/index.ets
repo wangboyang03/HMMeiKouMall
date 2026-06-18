@@ -1,3 +1,3 @@
 export * from './DiscountGoods'
-export * from './Goods'
+export * from 'basic/src/main/ets/components/Goods'
 export * from './SearchSortItem'
