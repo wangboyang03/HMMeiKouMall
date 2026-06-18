@@ -1,6 +1,7 @@
-import { AppSafeArea, BreakPoint, GuessingComponent } from "basic"
+import { AppSafeArea, BreakPoint, Constants, GuessingComponent, StackAddress } from "basic"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { NavigationColumn } from "../components"
+import { HMRouterMgr } from "@hadss/hmrouter"
 
 
 @ComponentV2
@@ -32,7 +33,7 @@ export struct MineView {
                 .width(40)
                 .aspectRatio(1)
                 .borderRadius(20)
-              if (true) {
+              if (false) {
                 Text("张三")
                   .fontColor($r('app.color.black'))
                   .fontWeight(500)
@@ -40,9 +41,9 @@ export struct MineView {
                 Text('立即登录')
                   .fontColor($r('app.color.black'))
                   .fontWeight(500)
-                  .onClick(() => {
-
-                  })
+                  .onClick(() => HMRouterMgr.push({
+                    pageUrl: StackAddress.LOGIN_PAGE
+                  }))
               }
             }
             .width('100%')
