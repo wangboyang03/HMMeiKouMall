@@ -32,6 +32,14 @@ export struct SearchSortItem {
       }
       .justifyContent(FlexAlign.Center)
     }
-    .onClick(() => {})
+    .onClick(() => {
+      if (this.field == this.sortField) {
+        // 意味着当前选中与显示的字段一致，则切换排序方法
+        this.onSortChange(this.field, this.sortMethod == 'asc' ? 'desc' : 'asc')
+      } else {
+        // 不一致 切换字段 默认是降序
+        this.onSortChange(this.field, 'desc')
+      }
+    })
   }
 }

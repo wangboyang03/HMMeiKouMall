@@ -42,6 +42,13 @@ export struct SearchResultView {
     }
   }
 
+  onChangeGoodsList() {
+    this.goodsList = []
+    this.params.page = 1
+    this.isFinished = false
+    this.getSearchResultData() // 重新请求数据
+  }
+
   aboutToAppear(): void {
     const params = HMRouterMgr.getCurrentParam() as SearchRouterParam
     // this.getUIContext().getPromptAction().openToast({message: JSON.stringify(params)})
@@ -71,12 +78,7 @@ export struct SearchResultView {
             .margin(0)
             .height(36)
             .caretStyle({ color: $r('app.color.red') })
-            .onSubmit((_:string) => {
-              this.goodsList = []
-              this.params.page = 1
-              this.isFinished = false
-              this.getSearchResultData() // 重新请求数据
-            })
+            .onSubmit((_:string) => this.onChangeGoodsList())
         }
         .padding({ top: this.safeAreaValue?.topHeight, right: 16 })
         .linearGradient({
@@ -93,7 +95,11 @@ export struct SearchResultView {
               field: item.field,
               sortField: this.params.sortField,
               sortMethod: this.params.sortMethod,
-              onSortChange: (field: SortField, method: SortMethod) => {}
+              onSortChange: (field: SortField, method: SortMethod): void => {
+                this.params.sortField = field
+                this.params.sortMethod = method
+                this.onChangeGoodsList()
+              }
             })
           })
           Text('筛选')
