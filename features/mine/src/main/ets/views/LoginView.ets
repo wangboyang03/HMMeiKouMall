@@ -17,7 +17,12 @@ export struct LoginView {
   })
   @Local agree: boolean = false
   @Computed get buttonEnable() {
-    return !!(this.loginForm.account.trim() && this.loginForm.password.trim())
+    // 手机号校验
+    const phoneReg = /^1[3-9]\d{9}$/
+    // 去除前后空格
+    const account = this.loginForm.account.trim()
+    const password = this.loginForm.password.trim()
+    return phoneReg.test(account) && password.length >= 6
   }
 
 
