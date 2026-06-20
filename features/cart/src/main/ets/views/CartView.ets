@@ -1,6 +1,4 @@
-import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel,
-  Constants,
-  GuessingComponent, NavigationBar, StackAddress } from 'basic'
+import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsObject, CartGoodsItemModel, Constants, GuessingComponent, NavigationBar, StackAddress } from 'basic'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
@@ -13,8 +11,9 @@ export struct CartView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   appUser?: AppUserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
-  @Local cartList: CartGoodsItemModel[] = []
+  // @Local cartList: CartGoodsItemModel[] = []
   @Local isShowLeftIcon: boolean = HMRouterMgr.getCurrentParam() as boolean
+  appCart?: CartGoodsObject = AppStorageV2.connect(CartGoodsObject, () => new CartGoodsObject())
 
   aboutToAppear(): void {
 
@@ -42,9 +41,9 @@ export struct CartView {
       List() {
         if (this.appUser?.User.token) {
           // 已登录状态下
-          if (this.cartList.length) {
+          if (this.appCart?.cartGoodsList.length) {
             // 购物车内有商品
-            ForEach(this.cartList, (cart: CartGoodsItemModel) => {
+            ForEach(this.appCart.cartGoodsList, (cart: CartGoodsItemModel) => {
               ListItem() {
                 CartItem({
                   cart: cart,
@@ -91,7 +90,7 @@ export struct CartView {
       .layoutWeight(1)
       .scrollBar(BarState.Off)
 
-      if (this.cartList.length) {
+      if (this.appCart?.cartGoodsList.length) {
         Row() {
           Checkbox()
             .selectedColor($r('app.color.red'))
@@ -110,7 +109,7 @@ export struct CartView {
             .fontColor($r('app.color.red'))
             .layoutWeight(1)
           Button('去结算')
-            .enabled(this.cartList.some(item => item.selected))
+            .enabled(this.appCart.cartGoodsList.some(item => item.selected))
             .fontSize(14)
             .height(36)
             .backgroundColor($r('app.color.red'))

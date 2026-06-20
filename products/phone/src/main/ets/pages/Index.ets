@@ -1,6 +1,4 @@
-import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress, Constants,
-  CartManager,
-  CartCountObject} from 'basic'
+import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress, Constants, CartManager, CartGoodsObject} from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomePageView } from 'homepage'
@@ -23,7 +21,7 @@ struct Index {
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   modifier: MyNavModifier = new MyNavModifier()
   tabsController: TabsController = new TabsController()
-  appCart?: CartCountObject = AppStorageV2.connect(CartCountObject, () => new CartCountObject())
+  appCart?: CartGoodsObject = AppStorageV2.connect(CartGoodsObject, () => new CartGoodsObject())
 
   async aboutToAppear(): Promise<void> {
     this.registerEvent()

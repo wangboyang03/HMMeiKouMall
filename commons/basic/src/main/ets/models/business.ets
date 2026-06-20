@@ -123,6 +123,9 @@ export interface CartGoodsCount {
   count: number;
 }
 
-@ObservedV2 export class CartCountObject {
+@ObservedV2 export class CartGoodsObject {
+  // 购物车数量
   @Trace count: number = 0
+  // 购物车商品列表
+  @Trace cartGoodsList: CartGoodsItemModel[] = []
 }

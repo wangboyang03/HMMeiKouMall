@@ -2,13 +2,7 @@ import { Goods } from '../models'
 import { AppStorageV2, PromptAction } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BreakPoint,
-  CartCountObject,
-  CartManager,
-  GuessingComponent, LoadingCustomDialog, NavigationBar,
-  Sku,
-  SkuType, StackAddress,
-  UserAuth } from 'basic'
+import { AppSafeArea, BreakPoint, CartGoodsObject, CartManager, GuessingComponent, LoadingCustomDialog, NavigationBar, Sku, SkuType, StackAddress, UserAuth } from 'basic'
 import { addGoodsToCartApi, getGoodsDetailApi } from '../api'
 
 
@@ -33,7 +27,7 @@ export struct GoodsView {
   })
   @Local counterNumber: number = 1 // 购物车数量
   promptAction: PromptAction = this.getUIContext().getPromptAction()
-  appCart?:CartCountObject = AppStorageV2.connect(CartCountObject, () => new CartCountObject())
+  appCart?:CartGoodsObject = AppStorageV2.connect(CartGoodsObject, () => new CartGoodsObject())
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
