@@ -2,9 +2,7 @@ import { Goods } from '../models'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BreakPoint, GuessingComponent,
-  LoadingCustomDialog,
-  NavigationBar, SkuType, StackAddress } from 'basic'
+import { AppSafeArea, BreakPoint, GuessingComponent, LoadingCustomDialog, NavigationBar, SkuType, StackAddress } from 'basic'
 import { getGoodsDetailApi } from '../api'
 
 
@@ -49,8 +47,9 @@ export struct GoodsView {
   build() {
     Column() {
       NavigationBar({
+        title: '',
         showRightIcon: true,
-        customTitle: () => {},
+        customTitle: (): void => this.CustomTitleBuilder(),
         onLeftClick: () => HMRouterMgr.pop()
       })
       Column() {
@@ -134,9 +133,10 @@ export struct GoodsView {
       Row({ space: 10 }) {
         ForEach(this.tabsList, (tabName: string, index: number) => {
           Text(tabName)
-            .fontColor(this.activeIndex === index ? $r("app.color.black") : $r("app.color.gray"))
+            .fontColor(this.activeIndex == index ? $r("app.color.black") : $r("app.color.gray"))
             .onClick(() => {
-
+              this.activeIndex = index
+              this.scroller.scrollToIndex(index)
             })
         })
       }
@@ -246,16 +246,14 @@ export struct GoodsView {
   }
 }
 
-@Extend(Image)
-function iconButton() {
+@Extend(Image) function iconButton() {
   .width(24)
   .aspectRatio(1)
   .margin(13)
   .fillColor($r('app.color.black'))
 }
 
-@Extend(Button)
-function buyButton(color: ResourceStr, isLeft: boolean) {
+@Extend(Button) function buyButton(color: ResourceStr, isLeft: boolean) {
   .fontSize(14)
   .height(36)
   .type(ButtonType.Normal)

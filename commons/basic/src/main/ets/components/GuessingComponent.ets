@@ -50,6 +50,7 @@ export struct GuessingComponent {
           }
         })
       }
+      .height('100%')
       .columnsTemplate(
         new BreakPointType({
           sm: '1fr 1fr',

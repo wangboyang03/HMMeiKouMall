@@ -31,6 +31,7 @@ export struct NavigationBar {
             .alignRules({
               center: {anchor: '__container__', align: VerticalAlign.Center}
             })
+            .zIndex(1)
         }
         if (this.showRightIcon) {
           Image(this.rightIcon)
@@ -42,6 +43,7 @@ export struct NavigationBar {
               right: {anchor: '__container__', align: HorizontalAlign.End},
               center: {anchor: '__container__', align: VerticalAlign.Center}
             })
+            .zIndex(1)
         }
 
         if (this.title) {
@@ -52,10 +54,10 @@ export struct NavigationBar {
               center: {anchor: '__container__', align: VerticalAlign.Center},
               middle: {anchor: '__container__', align: HorizontalAlign.Center}
             })
-        }
-
-        if (this.customTitle) {
-          this.customTitle() // 传入的UI结构
+        } else {
+          if (this.customTitle) {
+            this.customTitle() // 传入的UI结构
+          }
         }
       }
       .width('100%')
