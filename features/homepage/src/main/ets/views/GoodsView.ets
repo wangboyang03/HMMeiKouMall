@@ -3,6 +3,7 @@ import { AppStorageV2 } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppSafeArea, BreakPoint, GuessingComponent, NavigationBar, SkuType, StackAddress } from 'basic'
+import { getGoodsDetailApi } from '../api'
 
 
 @HMRouter({ pageUrl: StackAddress.GOODS_PAGE })
@@ -20,6 +21,18 @@ export struct GoodsView {
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
+    if (this.goods.id) {
+      this.getGoodsDetailData()
+    }
+  }
+
+  /**
+   * 获取商品详情
+   */
+  async getGoodsDetailData() {
+    this.goods = await getGoodsDetailApi({
+      id: this.goods.id
+    })
   }
 
   build() {

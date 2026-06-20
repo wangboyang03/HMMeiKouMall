@@ -116,3 +116,7 @@ export interface HmSpecValue {
   selected: boolean | null
   disabled: boolean | null
 }
+
+export interface GoodsDetailRequest {
+  id: string
+}

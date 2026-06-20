@@ -1,5 +1,5 @@
 import { CategoryItem, Constants, GoodsItem, Logger, NetworkRequestUtil } from "basic"
-import { Banner, HotResult, RecommendRequest, SearchResult, SearchParams } from "../models"
+import { Banner, HotResult, RecommendRequest, SearchResult, SearchParams, GoodsDetailRequest, Goods } from "../models"
 import { data } from "@kit.TelephonyKit"
 
 /**
@@ -41,3 +41,8 @@ export const getRecommendApi = (params: RecommendRequest) => NetworkRequestUtil.
  * 获取搜索内容数据
  */
 export const getSearchResultApi = (data: SearchParams) => NetworkRequestUtil.post<SearchResult>(Constants.Search_Result_API, data)
+
+/**
+ * 获取商品详情页
+ */
+export const getGoodsDetailApi = (params: GoodsDetailRequest) => NetworkRequestUtil.get<Goods>(Constants.GOODS_DETAIL_API, params)
