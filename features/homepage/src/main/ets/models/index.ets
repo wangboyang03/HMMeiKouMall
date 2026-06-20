@@ -1,4 +1,4 @@
-import { GoodsItem } from "basic";
+import { GoodsItem, SkuType, Spec } from "basic";
 
 /**
  * 轮播图
@@ -89,4 +89,30 @@ export interface SearchRouterParam {
 export interface SearchResult {
   // conditions: 暂不需要
   pageData: GoodsItems
+}
+
+// 其他略
+export interface GoodsProperty {
+  name: string;
+  value: string;
+}
+
+export interface GoodsDetail {
+  pictures: string[];
+  properties: GoodsProperty[];
+}
+
+export interface Goods extends GoodsItem {
+  inventory: number
+  mainPictures: string[]
+  details: GoodsDetail
+  specs: Spec[]
+  skus: SkuType[]
+}
+
+export interface HmSpecValue {
+  name: string
+  picture: string | null
+  selected: boolean | null
+  disabled: boolean | null
 }

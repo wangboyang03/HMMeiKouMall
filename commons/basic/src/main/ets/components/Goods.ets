@@ -1,3 +1,5 @@
+import { HMRouterMgr } from "@hadss/hmrouter"
+import { StackAddress } from "../Constants"
 import { GoodsItem } from "../models"
 
 @ComponentV2
@@ -54,5 +56,9 @@ export struct Goods {
     .backgroundColor($r('app.color.white'))
     .borderRadius(8)
     .clip(true)
+    .onClick(() => HMRouterMgr.push({
+      pageUrl: StackAddress.GOODS_PAGE,
+      param: this.goods
+    }))
   }
 }

@@ -6,7 +6,8 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@abner/log": "^1.0.5"
+    "@abner/log": "^1.0.5",
+    "@ohmos/sku": "^1.0.1"
   },
   "devDependencies": {},
   "dynamicDependencies": {}
