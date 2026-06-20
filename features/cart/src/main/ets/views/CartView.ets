@@ -1,19 +1,20 @@
 import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel,
   Constants,
   GuessingComponent, NavigationBar, StackAddress } from 'basic'
-import { HMRouterMgr } from '@hadss/hmrouter'
+import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
 import { EmptyComponent } from '../components'
 import { emitter } from '@kit.BasicServicesKit'
 
-
+@HMRouter({pageUrl: StackAddress.CART_PAGE }) // 添加路由跳转注解
 @ComponentV2
 export struct CartView {
   breakPointObject?: BreakPoint = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   appUser?: AppUserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
   @Local cartList: CartGoodsItemModel[] = []
+  @Local isShowLeftIcon: boolean = HMRouterMgr.getCurrentParam() as boolean
 
   aboutToAppear(): void {
 
@@ -28,6 +29,7 @@ export struct CartView {
   build() {
     Column() {
       NavigationBar({
+        showLeftIcon: this.isShowLeftIcon,
         onLeftClick: () => HMRouterMgr.pop(),
         title: '购物袋',
         showRightIcon: true

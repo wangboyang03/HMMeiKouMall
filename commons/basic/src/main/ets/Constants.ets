@@ -40,4 +40,5 @@ export class StackAddress {
   static readonly LOGIN_PAGE = "LoginView"
   static readonly SETTING_PAGE = "SettingView"
   static readonly GOODS_PAGE = "GoodsView" // 商品详情页面
+  static readonly CART_PAGE = "CartView" // 购物车页面
 }

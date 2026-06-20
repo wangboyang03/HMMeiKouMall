@@ -141,9 +141,10 @@ export struct GoodsView {
         }) {
           Image($r('app.media.ic_public_cart'))
             .iconButton()
-            .onClick(() => {
-
-            })
+            .onClick(() => HMRouterMgr.push({
+              pageUrl: StackAddress.CART_PAGE,
+              param: true
+            }))
         }
 
         Row() {
