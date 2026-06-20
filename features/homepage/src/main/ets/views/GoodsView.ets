@@ -25,6 +25,7 @@ export struct GoodsView {
     customStyle: true,
     alignment: DialogAlignment.Center
   })
+  @Local counterNumber: number = 1 // 购物车数量
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
@@ -105,6 +106,7 @@ export struct GoodsView {
           Button('加入购物袋')
             .buyButton($r('app.color.black'), true)
             .onClick(() => {
+              this.showSheet = true
             })
           Button('立即购买')
             .buyButton($r('app.color.red'), false)
@@ -194,11 +196,15 @@ export struct GoodsView {
 
           Row({ space: 10 }) {
             // 计数器
+            Counter(){
+              Text(String(this.counterNumber))
+            }.enableDec(this.counterNumber > 1) // 减法使用约束
+            .onInc(() => this.counterNumber++)
+            .onDec(() => this.counterNumber--)
 
-
-            Text('库存充足')
+            Text(this.goods.inventory > 100000 ? '库存充足' : '库存紧张')
               .fontSize(12)
-              .fontColor($r('app.color.gray'))
+              .fontColor(this.goods.inventory > 100000 ? $r('app.color.gray') : $r('app.color.red'))
           }
         }
         .height(80)
