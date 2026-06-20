@@ -1,7 +1,10 @@
-import { AppSafeArea, AppUserObject, BreakPoint, Constants, GuessingComponent, StackAddress } from "basic"
+import { AppSafeArea, AppUserObject, BreakPoint, Constants,
+  FileUploadUtil,
+  GuessingComponent, StackAddress } from "basic"
 import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI"
 import { NavigationColumn } from "../components"
 import { HMRouterMgr } from "@hadss/hmrouter"
+import { common } from "@kit.AbilityKit"
 
 @ComponentV2
 export struct MineView {
@@ -16,6 +19,20 @@ export struct MineView {
           // header
           Column() {
             Row() {
+              Column() {
+                Button('点击上传文件').onClick(async ()=> {
+                  const file = await FileUploadUtil.getInstance().selectFileFromManager()
+                  if (!!file) {
+                    await FileUploadUtil.getInstance().upload({
+                      context: this.getUIContext().getHostContext() as common.Context,
+                      filePath: file.filePath,
+                      fileName: file.fileName,
+                      chunkSize: 2 * 1024 * 1024,
+                      onProgress: (progress) => {}
+                    })
+                  }
+                })
+              }
               Blank()
               if (this.appUser?.User?.token) {
                 Image($r('app.media.ic_public_settings'))
