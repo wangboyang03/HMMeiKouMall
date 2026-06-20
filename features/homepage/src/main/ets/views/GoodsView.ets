@@ -2,7 +2,9 @@ import { Goods } from '../models'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BreakPoint, GuessingComponent, NavigationBar, SkuType, StackAddress } from 'basic'
+import { AppSafeArea, BreakPoint, GuessingComponent,
+  LoadingCustomDialog,
+  NavigationBar, SkuType, StackAddress } from 'basic'
 import { getGoodsDetailApi } from '../api'
 
 
@@ -18,6 +20,13 @@ export struct GoodsView {
   @Local sku: SkuType = {} as SkuType
   scroller = new Scroller()
   tabsList: string[] = ["商品", "评价", "详情", "推荐"]
+  loadingDialog = new CustomDialogController({
+    builder: LoadingCustomDialog({
+      message: '新鲜内容马上就来'
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Center
+  })
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
@@ -30,9 +39,11 @@ export struct GoodsView {
    * 获取商品详情
    */
   async getGoodsDetailData() {
+    this.loadingDialog.open()
     this.goods = await getGoodsDetailApi({
       id: this.goods.id
     })
+    this.loadingDialog.close()
   }
 
   build() {
