@@ -1,8 +1,11 @@
-import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel, GuessingComponent, NavigationBar, StackAddress } from 'basic'
+import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel,
+  Constants,
+  GuessingComponent, NavigationBar, StackAddress } from 'basic'
 import { HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
 import { EmptyComponent } from '../components'
+import { emitter } from '@kit.BasicServicesKit'
 
 
 @ComponentV2
@@ -56,7 +59,11 @@ export struct CartView {
           } else {
             ListItem() {
               EmptyComponent({
-                onBtnClick: () => {}
+                onBtnClick: () => emitter.emit(Constants.SWITCH_HOMEPAGE, {
+                  data: {
+                    index: 0
+                  }
+                })
               })
             }
           }

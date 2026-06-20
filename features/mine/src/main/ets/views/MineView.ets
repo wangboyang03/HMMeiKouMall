@@ -31,7 +31,8 @@ export struct MineView {
 
             Row({ space: 16 }) {
               // 头像
-              Image(this.appUser?.User?.avatar ?? $r('app.media.ic_user_avatar'))
+              // Image(this.appUser?.User?.avatar ?? $r('app.media.ic_user_avatar'))
+              Image(this.appUser?.User?.avatar && this.appUser.User.avatar !== '' ? this.appUser.User.avatar : $r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
                 .borderRadius(20)

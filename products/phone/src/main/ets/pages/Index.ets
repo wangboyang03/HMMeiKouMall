@@ -1,10 +1,11 @@
-import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress } from 'basic'
+import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress, Constants } from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomePageView } from 'homepage'
 import { MineView } from 'mine'
 import { AppStorageV2, AttributeUpdater } from '@kit.ArkUI'
 import { HMNavigation } from '@hadss/hmrouter'
+import { emitter } from '@kit.BasicServicesKit'
 
 @Entry
 @ComponentV2
@@ -19,6 +20,24 @@ struct Index {
   breakPointObject = AppStorageV2.connect(BreakPoint, () => new BreakPoint())
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   modifier: MyNavModifier = new MyNavModifier()
+  tabsController: TabsController = new TabsController()
+
+  aboutToAppear(): void {
+    this.registerEvent()
+  }
+
+  /**
+   * 注册事件
+   */
+  registerEvent() {
+    emitter.on(Constants.SWITCH_HOMEPAGE, (event) => {
+      if (!!event.data) {
+        // this.activeIndex = event.data.index as number
+        this.tabsController.changeIndex(event.data.index as number)
+      }
+    })
+  }
+
 
   build() {
     Stack() {
@@ -29,7 +48,7 @@ struct Index {
           modifier: this.modifier
         }
       }) {
-        Tabs({ index: this.activeIndex!!, barPosition: new BreakPointType({
+        Tabs({ controller: this.tabsController, index: this.activeIndex!!, barPosition: new BreakPointType({
           sm: BarPosition.End,
           md: BarPosition.End,
           lg: BarPosition.Start
