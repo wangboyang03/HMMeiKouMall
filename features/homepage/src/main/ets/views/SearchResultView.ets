@@ -1,7 +1,9 @@
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppSafeArea, BasicDataSource, BreakPoint,
   BreakPointEnum,
-  BreakPointType, GoodsItem, StackAddress } from 'basic'
+  BreakPointType, GoodsItem,
+  LoadingCustomDialog,
+  StackAddress } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { SearchParams, SearchRouterParam, SortCompAttr, SortField, SortMethod } from '../models'
 import { Goods, SearchSortItem } from '../components'
@@ -30,7 +32,14 @@ export struct SearchResultView {
   @Local isLoading: boolean = false // 正在加载 中
   @Local isFinished: boolean = false // 是否已经加载完成
 
+  loadingDialog = new CustomDialogController({
+    builder: LoadingCustomDialog(),
+    customStyle: true,
+    alignment: DialogAlignment.Center
+  })
+
   async getSearchResultData() {
+    this.loadingDialog.open()
     const res = await getSearchResultApi(this.params)
     // 如果使用@ObservedV2+@Trace装饰的对象属性字段会被加上__ob_ 在请求拦截器做统一处理
     // this.lazyDataSource.reloadDataFromNewArray(res.pageData.items)
@@ -42,6 +51,7 @@ export struct SearchResultView {
     } else {
       this.params.page++ // 加载下一页数据
     }
+    this.loadingDialog.close()
   }
 
   onChangeGoodsList() {
