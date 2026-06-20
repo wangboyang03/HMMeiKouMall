@@ -2,7 +2,9 @@ import { Goods } from '../models'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BreakPoint, GuessingComponent, LoadingCustomDialog, NavigationBar, SkuType, StackAddress } from 'basic'
+import { AppSafeArea, BreakPoint, GuessingComponent, LoadingCustomDialog, NavigationBar,
+  Sku,
+  SkuType, StackAddress } from 'basic'
 import { getGoodsDetailApi } from '../api'
 
 
@@ -221,9 +223,17 @@ export struct GoodsView {
       List() {
         ListItem() {
           // Sku 组件
-
+          Sku({
+            skus: this.goods.skus,
+            specs: this.goods.specs,
+            onSkuChange: (sku: SkuType) => {
+              this.sku = sku
+            }
+          })
         }
       }
+      .width('100%')
+      .height('100%')
       .layoutWeight(1)
       .scrollBar(BarState.Off)
 
@@ -236,9 +246,7 @@ export struct GoodsView {
           })
         Button('立即购买')
           .buyButton($r('app.color.red'), false)
-          .onClick(async () => {
-
-          })
+          .onClick(async () => {})
       }
       .width('100%')
     }
