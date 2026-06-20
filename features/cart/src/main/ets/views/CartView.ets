@@ -1,7 +1,8 @@
-import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel, GuessingComponent, NavigationBar } from 'basic'
+import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsItemModel, GuessingComponent, NavigationBar, StackAddress } from 'basic'
 import { HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
+import { EmptyComponent } from '../components'
 
 
 @ComponentV2
@@ -13,20 +14,6 @@ export struct CartView {
 
   aboutToAppear(): void {
 
-  }
-
-  @Builder
-  DeleteBuilder(cart: CartGoodsItemModel) {
-    Text('删除')
-      .fontSize(14)
-      .width(60)
-      .height(100)
-      .backgroundColor($r('app.color.red'))
-      .fontColor($r('app.color.white'))
-      .textAlign(TextAlign.Center)
-      .onClick(() => {
-
-      })
   }
 
   onCheckOrder() {
@@ -49,8 +36,9 @@ export struct CartView {
 
       List() {
         if (this.appUser?.User.token) {
-
+          // 已登录状态下
           if (this.cartList.length) {
+            // 购物车内有商品
             ForEach(this.cartList, (cart: CartGoodsItemModel) => {
               ListItem() {
                 CartItem({
@@ -67,22 +55,30 @@ export struct CartView {
             })
           } else {
             ListItem() {
-
+              EmptyComponent({
+                onBtnClick: () => {}
+              })
             }
           }
         } else {
           // 未登录
           ListItem() {
-
-
+            EmptyComponent({
+              tip: '您还没有登录~',
+              buttonText: '去登录',
+              onBtnClick: () => HMRouterMgr.push({
+                pageUrl: StackAddress.LOGIN_PAGE
+              })
+            })
           }
         }
         ListItem() {
           GuessingComponent().margin({ top: 8, bottom: 8 })
         }
       }
-      .contentStartOffset(8)
       .width('100%')
+      .height('100%')
+      .contentStartOffset(8)
       .layoutWeight(1)
       .scrollBar(BarState.Off)
 
@@ -90,9 +86,7 @@ export struct CartView {
         Row() {
           Checkbox()
             .selectedColor($r('app.color.red'))
-            .onClick(async () => {
-
-            })
+            .onClick(async () => {})
           Text('全选')
             .fontSize(14)
             .fontColor($r('app.color.black'))
@@ -111,9 +105,7 @@ export struct CartView {
             .fontSize(14)
             .height(36)
             .backgroundColor($r('app.color.red'))
-            .onClick(() => {
-
-            })
+            .onClick(() => {})
         }
         .height(50)
         .width('100%')
@@ -129,5 +121,16 @@ export struct CartView {
     .width('100%')
     .backgroundColor($r('app.color.under'))
 
+  }
+
+  @Builder DeleteBuilder(cart: CartGoodsItemModel) {
+    Text('删除')
+      .fontSize(14)
+      .width(60)
+      .height(100)
+      .backgroundColor($r('app.color.red'))
+      .fontColor($r('app.color.white'))
+      .textAlign(TextAlign.Center)
+      .onClick(() => {})
   }
 }
