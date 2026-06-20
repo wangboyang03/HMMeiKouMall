@@ -1,5 +1,7 @@
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, AppUserObject, LoginResponseViewModel, NavigationBar, StackAddress, UserAuth } from 'basic'
+import { AppSafeArea, AppUserObject,
+  CartManager,
+  LoginResponseViewModel, NavigationBar, StackAddress, UserAuth } from 'basic'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CellGroup, Cell } from '../components'
 
@@ -57,6 +59,7 @@ export struct SettingView {
               })
               if (res.index == 1) {
                 UserAuth.getInstance().setUser({} as LoginResponseViewModel)
+                await CartManager.getInstance().updateCartCount()
                 HMRouterMgr.pop()
               }
             })

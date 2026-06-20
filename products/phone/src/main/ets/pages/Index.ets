@@ -1,4 +1,6 @@
-import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress, Constants } from 'basic'
+import { BreakPoint, BreakPointType, BreakPointEnum, TabItemParams, AppSafeArea, StackAddress, Constants,
+  CartManager,
+  CartCountObject} from 'basic'
 import { CartView } from 'cart'
 import { CategoryView } from 'category'
 import { HomePageView } from 'homepage'
@@ -21,9 +23,11 @@ struct Index {
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
   modifier: MyNavModifier = new MyNavModifier()
   tabsController: TabsController = new TabsController()
+  appCart?: CartCountObject = AppStorageV2.connect(CartCountObject, () => new CartCountObject())
 
-  aboutToAppear(): void {
+  async aboutToAppear(): Promise<void> {
     this.registerEvent()
+    await CartManager.getInstance().updateCartCount()
   }
 
   /**
@@ -99,12 +103,28 @@ struct Index {
   @Builder
   TabItemBuilder(item: TabItemParams, index: number) {
     Column() {
-      Image(this.activeIndex == index ? item.active : item.normal)
-        .width(24)
-        .aspectRatio(1)
-      Text(item.text)
-        .fontColor($r('app.color.black'))
-        .fontSize(12)
+      if (index == 2) {
+        Badge({
+          count: this.appCart?.count,
+          style: {}
+        }) {
+          Column({ space: 5 }) {
+            Image(this.activeIndex == index ? item.active : item.normal)
+              .width(24)
+              .aspectRatio(1)
+            Text(item.text)
+              .fontColor($r('app.color.black'))
+              .fontSize(12)
+          }
+        }
+      } else {
+        Image(this.activeIndex == index ? item.active : item.normal)
+          .width(24)
+          .aspectRatio(1)
+        Text(item.text)
+          .fontColor($r('app.color.black'))
+          .fontSize(12)
+      }
     }
     .justifyContent(FlexAlign.SpaceEvenly)
     .height(50)

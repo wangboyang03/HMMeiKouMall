@@ -2,7 +2,10 @@ import { Goods } from '../models'
 import { AppStorageV2, PromptAction } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { AppSafeArea, BreakPoint, GuessingComponent, LoadingCustomDialog, NavigationBar,
+import { AppSafeArea, BreakPoint,
+  CartCountObject,
+  CartManager,
+  GuessingComponent, LoadingCustomDialog, NavigationBar,
   Sku,
   SkuType, StackAddress,
   UserAuth } from 'basic'
@@ -30,6 +33,7 @@ export struct GoodsView {
   })
   @Local counterNumber: number = 1 // 购物车数量
   promptAction: PromptAction = this.getUIContext().getPromptAction()
+  appCart?:CartCountObject = AppStorageV2.connect(CartCountObject, () => new CartCountObject())
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
@@ -65,6 +69,7 @@ export struct GoodsView {
             skuId: this.sku.id,
             count: String(this.counterNumber)
           })
+          await CartManager.getInstance().updateCartCount()
           this.promptAction.showToast({ message: '添加成功' })
         } catch (error) {
           this.promptAction.showToast({ message: '加入失败' })
@@ -130,7 +135,7 @@ export struct GoodsView {
         Image($r('app.media.ic_public_comment'))
           .iconButton()
         Badge({
-          count: 0,
+          count: this.appCart?.count ?? 0,
           style: {},
           position: { x: 30, y: 4 }
         }) {

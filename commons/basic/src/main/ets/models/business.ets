@@ -117,3 +117,12 @@ export interface AddCartGoodsItem {
   count: string;
   skuId: string;
 }
+
+/** 购物车商品数量 */
+export interface CartGoodsCount {
+  count: number;
+}
+
+@ObservedV2 export class CartCountObject {
+  @Trace count: number = 0
+}

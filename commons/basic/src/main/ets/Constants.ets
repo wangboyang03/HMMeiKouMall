@@ -29,6 +29,7 @@ export class Constants {
   static readonly LOGIN_API = "login" // 登录-账号密码登录
   static readonly GOODS_DETAIL_API = "goods" // 详情-获取详情信息
   static readonly ADD_CART_API = "member/cart" // 购物车-新增购物车
+  static readonly CART_COUNT_API = "member/cart/count" // 购物车-数量
 }
 
 export class StackAddress {

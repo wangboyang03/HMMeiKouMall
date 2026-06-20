@@ -1,4 +1,4 @@
-import { AppSafeArea, Logger, NavigationBar, StackAddress, UserAuth } from 'basic'
+import { AppSafeArea, CartManager, Logger, NavigationBar, StackAddress, UserAuth } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { LoginFormViewModel } from '../models'
@@ -37,6 +37,7 @@ export struct LoginView {
     try {
       const res = await LoginRequestApi(this.loginForm)
       UserAuth.getInstance().setUser(res)
+      await CartManager.getInstance().updateCartCount()
       HMRouterMgr.pop()
     } catch (error) {
       Logger.error(error)
