@@ -24,17 +24,17 @@ export class UserAuth {
     const UserObject = PersistenceV2.connect(AppUserObject, () => new AppUserObject())
     if (UserObject) {
       // UserObject.User = User
-      UserObject.User.account = User.account
-      UserObject.User.token = User.token
-      UserObject.User.avatar = User.avatar
-      UserObject.User.id = User.id
-      UserObject.User.nickname = User.nickname
-      UserObject.User.birthday = User.birthday
-      UserObject.User.cityCode = User.cityCode
-      UserObject.User.provinceCode = User.provinceCode
-      UserObject.User.gender = User.gender
-      UserObject.User.mobile = User.mobile
-      UserObject.User.profession = User.profession
+      UserObject.User.account = User.account ?? ''
+      UserObject.User.token = User.token ?? ''
+      UserObject.User.avatar = User.avatar ?? ''
+      UserObject.User.id = User.id ?? ''
+      UserObject.User.nickname = User.nickname ?? ''
+      UserObject.User.birthday = User.birthday ?? ''
+      UserObject.User.cityCode = User.cityCode ?? ''
+      UserObject.User.provinceCode = User.provinceCode ?? ''
+      UserObject.User.gender = User.gender ?? ''
+      UserObject.User.mobile = User.mobile ?? ''
+      UserObject.User.profession = User.profession ?? ''
 
       PersistenceV2.notifyOnError((key: string, reason: string, msg: string) => {
         AlertDialog.show({ message: reason + msg })
