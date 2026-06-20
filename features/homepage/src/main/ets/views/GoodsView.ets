@@ -1,11 +1,12 @@
 import { Goods } from '../models'
-import { AppStorageV2 } from '@kit.ArkUI'
+import { AppStorageV2, PromptAction } from '@kit.ArkUI'
 import { GoodsInformation, GoodsComment, GoodsDetail } from '../components'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppSafeArea, BreakPoint, GuessingComponent, LoadingCustomDialog, NavigationBar,
   Sku,
-  SkuType, StackAddress } from 'basic'
-import { getGoodsDetailApi } from '../api'
+  SkuType, StackAddress,
+  UserAuth } from 'basic'
+import { addGoodsToCartApi, getGoodsDetailApi } from '../api'
 
 
 @HMRouter({ pageUrl: StackAddress.GOODS_PAGE })
@@ -28,6 +29,7 @@ export struct GoodsView {
     alignment: DialogAlignment.Center
   })
   @Local counterNumber: number = 1 // 购物车数量
+  promptAction: PromptAction = this.getUIContext().getPromptAction()
 
   aboutToAppear(): void {
     this.goods = HMRouterMgr.getCurrentParam() as Goods
@@ -45,6 +47,41 @@ export struct GoodsView {
       id: this.goods.id
     })
     this.loadingDialog.close()
+  }
+
+  /**
+   * 添加购物车
+   */
+  async addCartFromGoodsItem() {
+    // 1.判断用户是否登录
+    const user = UserAuth.getInstance().getUser()
+    if (!!user?.token) {
+      // 2.判断商品规则选择是否完整
+      if (!!this.sku.id) {
+        try {
+          // 3.调用接口发请求
+          this.loading = true
+          await addGoodsToCartApi({
+            skuId: this.sku.id,
+            count: String(this.counterNumber)
+          })
+          this.promptAction.showToast({ message: '添加成功' })
+        } catch (error) {
+          this.promptAction.showToast({ message: '加入失败' })
+        } finally {
+          this.loading = false
+          this.showSheet = false
+        }
+      } else {
+        this.promptAction.showToast({ message: '请完善商品规格后重新操作' })
+      }
+    } else {
+      this.promptAction.showToast({ message: '请先登录' })
+      this.showSheet = false
+      HMRouterMgr.push({
+        pageUrl: StackAddress.LOGIN_PAGE
+      })
+    }
   }
 
   build() {
@@ -127,8 +164,8 @@ export struct GoodsView {
         height: SheetSize.FIT_CONTENT,
         backgroundColor: $r('app.color.white'),
         preferType: SheetType.CENTER
-      })
-
+      }
+    )
   }
 
   @Builder CustomTitleBuilder() {
@@ -204,9 +241,9 @@ export struct GoodsView {
             .onInc(() => this.counterNumber++)
             .onDec(() => this.counterNumber--)
 
-            Text(this.goods.inventory > 100000 ? '库存充足' : '库存紧张')
+            Text(this.goods.inventory > 10000 ? '库存充足' : '库存紧张')
               .fontSize(12)
-              .fontColor(this.goods.inventory > 100000 ? $r('app.color.gray') : $r('app.color.red'))
+              .fontColor(this.goods.inventory > 10000 ? $r('app.color.gray') : $r('app.color.red'))
           }
         }
         .height(80)
@@ -242,7 +279,7 @@ export struct GoodsView {
           .buyButton($r('app.color.black'), true)
           .onClick(() => {
             // 实现加入购物车
-
+            this.addCartFromGoodsItem()
           })
         Button('立即购买')
           .buyButton($r('app.color.red'), false)

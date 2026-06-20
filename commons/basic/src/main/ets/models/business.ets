@@ -111,3 +111,9 @@ export class CartGoodsItemModel implements CartGoodsItem {
     this.stock = model.stock
   }
 }
+
+/** 新增购物车 */
+export interface AddCartGoodsItem {
+  count: string;
+  skuId: string;
+}

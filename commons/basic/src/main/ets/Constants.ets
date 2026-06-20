@@ -28,6 +28,7 @@ export class Constants {
   static readonly GUESS_LICK_API = "home/goods/guessLike" // 猜你喜欢
   static readonly LOGIN_API = "login" // 登录-账号密码登录
   static readonly GOODS_DETAIL_API = "goods" // 详情-获取详情信息
+  static readonly ADD_CART_API = "member/cart" // 购物车-新增购物车
 }
 
 export class StackAddress {

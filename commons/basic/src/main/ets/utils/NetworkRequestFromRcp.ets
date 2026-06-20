@@ -16,6 +16,12 @@ class RcpRequestInterceptor implements rcp.Interceptor {
       // 当请求内容以对象的形式传递时 需要手动去除请求参数字段里的__ob_
       context.request.content = JSON.parse(JSON.stringify(context.request.content).replace(/__ob_/g, "")) as rcp.RequestContent
     }
+    const token = UserAuth.getInstance().getUser()?.token
+    if (token) {
+      if (context.request.headers) {
+        context.request.headers.authorization = `Bearer ${token}`
+      }
+    }
     return next.handle(context) // 允许放行到下一个执行链
   }
 }

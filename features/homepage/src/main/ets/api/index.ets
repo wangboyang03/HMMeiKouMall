@@ -1,6 +1,5 @@
-import { CategoryItem, Constants, GoodsItem, Logger, NetworkRequestUtil } from "basic"
+import { AddCartGoodsItem, CategoryItem, Constants, GoodsItem, Logger, NetworkRequestUtil } from "basic"
 import { Banner, HotResult, RecommendRequest, SearchResult, SearchParams, GoodsDetailRequest, Goods } from "../models"
-import { data } from "@kit.TelephonyKit"
 
 /**
  * 获取轮播图数据
@@ -46,3 +45,8 @@ export const getSearchResultApi = (data: SearchParams) => NetworkRequestUtil.pos
  * 获取商品详情页
  */
 export const getGoodsDetailApi = (params: GoodsDetailRequest) => NetworkRequestUtil.get<Goods>(Constants.GOODS_DETAIL_API, params)
+
+/**
+ * 加入商品到购物车
+ */
+export const addGoodsToCartApi = (data: AddCartGoodsItem) => NetworkRequestUtil.post<null>(Constants.ADD_CART_API, data)
