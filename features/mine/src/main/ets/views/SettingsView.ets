@@ -1,6 +1,7 @@
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppSafeArea, AppUserObject,
   CartManager,
+  HuaweiLoginAuth,
   LoginResponseViewModel, NavigationBar, StackAddress, UserAuth } from 'basic'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CellGroup, Cell } from '../components'
@@ -30,7 +31,9 @@ export struct SettingView {
         Blank() // 空格
         CellGroup() {
           Cell({
-            title: '收货地址管理', onRightClick: () => {}
+            title: '收货地址管理', onRightClick: () => HMRouterMgr.push({
+              pageUrl: StackAddress.ADDRESS_PAGE
+            })
           })
           Cell({ title: '账号安全' })
           Cell({ title: '消息设置' })
@@ -60,6 +63,7 @@ export struct SettingView {
               if (res.index == 1) {
                 UserAuth.getInstance().setUser({} as LoginResponseViewModel)
                 await CartManager.getInstance().updateCartCount()
+                HuaweiLoginAuth.getInstance().logoutAuth()
                 HMRouterMgr.pop()
               }
             })

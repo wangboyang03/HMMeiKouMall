@@ -42,4 +42,10 @@ export class HuaweiLoginAuth {
       return
     }
   }
+
+  async logoutAuth() {
+    const cancelRequest = new authentication.HuaweiIDProvider().createCancelAuthorizationRequest()
+    const controller = new authentication.AuthenticationController()
+    await controller.executeRequest(cancelRequest)
+  }
 }
