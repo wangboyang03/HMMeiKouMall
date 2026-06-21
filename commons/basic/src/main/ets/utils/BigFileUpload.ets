@@ -206,15 +206,19 @@ export class FileUploadUtil {
       const end = Math.min(start + chunkSize, fileSize)
       const file = fileIo.openSync(options.filePath, fileIo.OpenMode.READ_ONLY)
       const buffer = new ArrayBuffer(end - start)
-      fileIo.readSync(file.fd, buffer, {
+      const reader = fileIo.readSync(file.fd, buffer, {
         offset: start,
         length: end - start
       })
-      const tempPath = `${options.context.cacheDir}/chunk_${chunkIndex}.tmp` // 临时文件路径
-      const tempFile = fileIo.openSync(tempPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.CREATE | fileIo.OpenMode.TRUNC)
-      fileIo.writeSync(tempFile.fd, buffer)
-      fileIo.closeSync(file)
-      const chunkUint8Array = new Uint8Array(buffer)
+
+      // const res = await this.session.uploadFromFile(`${FileUploadUtil.BASE_URL}/api/upload/chunk`, new rcp.UploadFromFile(reader))
+
+      // const tempPath = `${options.context.cacheDir}/chunk_${chunkIndex}.tmp` // 临时文件路径
+      // const tempFile = fileIo.openSync(tempPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.CREATE | fileIo.OpenMode.TRUNC)
+      // fileIo.writeSync(tempFile.fd, buffer)
+      // fileIo.closeSync(file)
+      // const chunkUint8Array = new Uint8Array(buffer)
+
       // const boundary = '----ohos' + Date.now()
       // const body = this.buildMultipartBody(
       //   boundary,
@@ -235,20 +239,30 @@ export class FileUploadUtil {
       //   },
       //   body
       // )
+
       const form = new rcp.Form({
-        chunk: tempPath,
+        chunk: reader,
         fileHash,
         chunkIndex: String(chunkIndex),
         totalChunks: String(totalChunks),
         fileName: options.fileName
       })
+      const request = new rcp.Request(
+        `${FileUploadUtil.BASE_URL}/api/upload/chunk`,
+        'POST',
+        { 'Content-Type': `multipart/form-data` },
+        form
+      )
+      const res = (await this.session.fetch(request)).toString()
+      Logger.info( res)
+      // const result = await this._request<PickFileResponse>(`${FileUploadUtil.BASE_URL}/api/upload/chunk`, 'POST', undefined, form)
 
-      const result = await this._request<PickFileResponse>(`${FileUploadUtil.BASE_URL}/api/upload/chunk`, 'POST', undefined, form)
-      Logger.info(result)
-      if (!result?.success) {
-        Logger.error('上传单个切片文件失败', result?.message)
-        return false
-      }
+
+      // Logger.info(result)
+      // if (!result?.success) {
+      //   Logger.error('上传单个切片文件失败', result?.message)
+      //   return false
+      // }
       return true
     } catch (error) {
       Logger.error('上传单个切片文件失败', error)
@@ -283,6 +297,11 @@ export class FileUploadUtil {
 
   /**
    * 构造multipartBody
+   * @param boundary
+   * @param fields
+   * @param fileFieldName
+   * @param fileData
+   * @returns Uint8Array
    */
   buildMultipartBody(boundary: string, fields: Record<string, string>, fileFieldName: string, fileData: Uint8Array): Uint8Array {
     const CRLF = '\r\n'
