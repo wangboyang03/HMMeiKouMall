@@ -1,4 +1,7 @@
-import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsObject, CartGoodsItemModel, Constants, GuessingComponent, NavigationBar, StackAddress } from 'basic'
+import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsObject, CartGoodsItemModel, Constants, GuessingComponent, NavigationBar, StackAddress,
+  NetworkRequestUtil,
+  CartManager,
+  CartItemRequest} from 'basic'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
@@ -47,7 +50,16 @@ export struct CartView {
               ListItem() {
                 CartItem({
                   cart: cart,
-                  onChangeSelected: async selected => {}
+                  onChangeSelected: async selected => {},
+                  onChangeCount: async count => {
+                    this.getUIContext().getPromptAction().showToast({ message: String(count) })
+                    await NetworkRequestUtil.put<null>(`${Constants.CART_MODIFY_API}/${cart.skuId}`, {
+                      count: String(count),
+                      selected: cart.selected
+                    } as CartItemRequest)
+                    // 刷新购物车数据
+                    CartManager.getInstance().updateCartCount()
+                  }
                 })
               }
               .backgroundColor($r('app.color.under'))

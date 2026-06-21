@@ -129,3 +129,8 @@ export interface CartGoodsCount {
   // 购物车商品列表
   @Trace cartGoodsList: CartGoodsItemModel[] = []
 }
+
+export interface CartItemRequest {
+  count?: string;
+  selected?: boolean;
+}
