@@ -12,3 +12,21 @@ export interface LoginForm {
     this.password = models.password
   }
 }
+
+/**
+ * 华为登录
+ */
+export interface HuaweiLoginRequest {
+  /**
+   * 客户端id
+   */
+  clientId: string;
+  /**
+   * 客户端秘钥
+   */
+  clientSecret: string;
+  /**
+   * 华为授权码
+   */
+  code: string;
+}

@@ -34,6 +34,7 @@ export class Constants {
   static readonly CART_MODIFY_API = "member/cart/" // 购物车-修改单项
   static readonly CART_SELECTED_API = "member/cart/selected" // 购物车-全选/取消全选
   static readonly CART_DELETE_API = "member/cart" // 购物车-删除
+  static readonly HUAWEI_LOGIN_REQUEST_API = "login/huawei" // 华为登录请求
 }
 
 export class StackAddress {

@@ -1,8 +1,10 @@
-import { AppSafeArea, CartManager, Logger, NavigationBar, StackAddress, UserAuth } from 'basic'
+import { AppSafeArea, CartManager, HuaweiLoginAuth,
+  LoadingCustomDialog,
+  Logger, NavigationBar, StackAddress, UserAuth } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
-import { LoginFormViewModel } from '../models'
-import { LoginRequestApi } from '../api'
+import { HuaweiLoginRequest, LoginFormViewModel } from '../models'
+import { HuaweiLoginRequestApi, LoginRequestApi } from '../api'
 
 @Preview
 @HMRouter({ pageUrl: StackAddress.LOGIN_PAGE })
@@ -24,6 +26,13 @@ export struct LoginView {
     const password = this.loginForm.password.trim()
     return phoneReg.test(account) && password.length >= 6
   }
+  loadingDialog = new CustomDialogController({
+    builder: LoadingCustomDialog({
+      message: '正在登录中...'
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Center
+  })
 
 
   aboutToAppear(): void {
@@ -130,6 +139,28 @@ export struct LoginView {
 
           Row() {
             // 后续放置华为登录
+            Image($r("app.media.ic_user_huawei"))
+              .width(60)
+              .height(60)
+              .onClick(async () => {
+                const code = await HuaweiLoginAuth.getInstance().launchAuth()
+                // this.getUIContext().getPromptAction().showDialog({message: String(code)})
+                if (code) {
+                  this.loadingDialog.open()
+                  const res = await HuaweiLoginRequestApi({
+                    code,
+                    clientId: "111009537",
+                    clientSecret: "30ac635b8516278c75582b4bdf1a6cf06827d782d5ddc1c3f97a8e31cb1e761e"
+                  } as HuaweiLoginRequest)
+                  if (res.token) {
+                    UserAuth.getInstance().setUser(res)
+                    HMRouterMgr.pop()
+                  }
+                  this.loadingDialog.close()
+                } else {
+                  this.getUIContext().getPromptAction().showDialog({message: '登录失败'})
+                }
+              })
           }
         }
         .margin({ top: 200 })
