@@ -130,7 +130,20 @@ export interface CartGoodsCount {
   @Trace cartGoodsList: CartGoodsItemModel[] = []
 }
 
+/**
+ * 修改购物车
+ */
 export interface CartItemRequest {
   count?: string;
   selected?: boolean;
+}
+
+/**
+ * 删除购物车
+ */
+export interface DeleteCartItem {
+  /**
+   * skuId组成的数组
+   */
+  ids: string[];
 }

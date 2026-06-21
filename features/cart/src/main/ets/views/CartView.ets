@@ -2,7 +2,8 @@ import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsObject, CartGoodsItemM
   NetworkRequestUtil,
   CartManager,
   CartItemRequest,
-  LoadingCustomDialog} from 'basic'
+  LoadingCustomDialog,
+  DeleteCartItem} from 'basic'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
@@ -28,6 +29,9 @@ export struct CartView {
     customStyle: true,
     alignment: DialogAlignment.Center
   })
+  @Computed get cartTotalPrice() {
+    return this.appCart?.cartGoodsList.filter(item => item.selected).reduce((sum, item)=> sum + Number(item.price) * item.count, 0).toFixed(2)
+  }
 
   aboutToAppear(): void {
 
@@ -145,7 +149,7 @@ export struct CartView {
             .fontSize(14)
             .fontColor($r('app.color.black'))
             .margin({ right: 2 })
-          Text("0.00")
+          Text(String(this.cartTotalPrice))
             .fontSize(16)
             .fontWeight(500)
             .fontColor($r('app.color.red'))
@@ -181,6 +185,11 @@ export struct CartView {
       .backgroundColor($r('app.color.red'))
       .fontColor($r('app.color.white'))
       .textAlign(TextAlign.Center)
-      .onClick(() => {})
+      .onClick(async () => {
+        this.loadingDialog.open()
+        await NetworkRequestUtil.delete<null>(Constants.CART_DELETE_API, undefined, { ids: [cart.skuId] } as DeleteCartItem)
+        await CartManager.getInstance().updateCartCount() // 刷新购物车数据
+        this.loadingDialog.close()
+      })
   }
 }
