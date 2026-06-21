@@ -68,7 +68,7 @@ export struct CartView {
                       selected
                     } as CartItemRequest)
                     // 刷新购物车数据
-                    CartManager.getInstance().updateCartCount()
+                    await CartManager.getInstance().updateCartCount()
                     this.loadingDialog.close()
                   },
                   onChangeCount: async count => {
@@ -79,7 +79,7 @@ export struct CartView {
                       selected: cart.selected
                     } as CartItemRequest)
                     // 刷新购物车数据
-                    CartManager.getInstance().updateCartCount()
+                    await CartManager.getInstance().updateCartCount()
                     this.loadingDialog.close()
                   }
                 })
@@ -134,7 +134,7 @@ export struct CartView {
               await NetworkRequestUtil.put<null>(Constants.CART_SELECTED_API, {
                 selected: !this.isAllSelected
               } as CartItemRequest)
-              CartManager.getInstance().updateCartCount() // 更新购物车数据
+              await CartManager.getInstance().updateCartCount() // 更新购物车数据
               this.loadingDialog.close()
             })
           Text('全选')
