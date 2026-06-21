@@ -1,6 +1,6 @@
 @Preview
 @Component
-struct AddressItem {
+export struct AddressItem {
   province: string = 'A省'
   city: string = 'B市'
   address: string = 'C区'

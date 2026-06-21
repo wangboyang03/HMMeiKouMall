@@ -11,6 +11,10 @@
     {
       "name": "PhoneAbility_label",
       "value": "美蔻商城"
+    },
+    {
+      "name": "use_location_reason",
+      "value": "申请位置"
     }
   ]
 }

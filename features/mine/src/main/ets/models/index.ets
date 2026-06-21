@@ -30,3 +30,71 @@ export interface HuaweiLoginRequest {
    */
   code: string;
 }
+
+/**
+ * 地址管理
+ */
+export interface AddressResponse {
+  address: string;
+  addressTags: string;
+  cityCode: string;
+  contact: string;
+  countyCode: string;
+  fullLocation: string;
+  id: string;
+  isDefault: number;
+  postalCode: string;
+  provinceCode: string;
+  receiver: string;
+}
+
+/**
+ * 新增地址请求
+ */
+export interface AddAddressRequest {
+  /**
+   * 地址
+   */
+  address: string;
+  /**
+   * 收货人电话
+   */
+  contact: string;
+  /**
+   * 是否默认，0(默认) 或 1
+   */
+  isDefault: number;
+  /**
+   * 收货人名称
+   */
+  receiver: string;
+  id?: string;
+}
+
+export interface TextInputParams {
+  label: string;
+  value: string;
+  address?: AddressForm;
+}
+
+/**
+ * 地址表单
+ */
+@ObservedV2 export class AddressForm {
+  id?: string
+  @Trace address: string = "";
+  contact: string = "";
+  /**
+   * 0(默认) 或 1
+   */
+  isDefault: number = 0;
+  receiver: string = "";
+
+  constructor(item: AddAddressRequest) {
+    this.id = item.id
+    this.address = item.address
+    this.contact = item.contact
+    this.receiver = item.receiver
+    this.isDefault = item.isDefault
+  }
+}

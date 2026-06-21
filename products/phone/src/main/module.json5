@@ -20,6 +20,17 @@
       /** 获取设备网络信息 **/
       {
         "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      /** 获取位置权限 **/
+      {
+        "name": "ohos.permission.LOCATION",
+        "reason": "$string:use_location_reason",
+        "usedScene" : {"abilities": ["PhoneAbility"]}
+      },
+      {
+        "name": "ohos.permission.APPROXIMATELY_LOCATION",
+        "reason": "$string:use_location_reason",
+        "usedScene" : {"abilities": ["PhoneAbility"]}
       }
     ],
     "abilities": [

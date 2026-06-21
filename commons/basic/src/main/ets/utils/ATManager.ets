@@ -1,5 +1,4 @@
 import { abilityAccessCtrl, Permissions } from "@kit.AbilityKit";
-import { Constants } from "../Constants";
 
 export class ATManager {
   private static sInstance: ATManager;
