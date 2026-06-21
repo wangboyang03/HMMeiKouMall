@@ -18,6 +18,9 @@ export struct CartView {
   // @Local cartList: CartGoodsItemModel[] = []
   @Local isShowLeftIcon: boolean = HMRouterMgr.getCurrentParam() as boolean
   appCart?: CartGoodsObject = AppStorageV2.connect(CartGoodsObject, () => new CartGoodsObject())
+  @Computed get isAllSelected() {
+    return this.appCart?.cartGoodsList.every(item => item.selected)
+  }
   loadingDialog = new CustomDialogController({
     builder: LoadingCustomDialog({
       message: "正在修改购物车,请稍后..."
@@ -125,7 +128,15 @@ export struct CartView {
         Row() {
           Checkbox()
             .selectedColor($r('app.color.red'))
-            .onClick(async () => {})
+            .select(this.isAllSelected)
+            .onClick(async () => {
+              this.loadingDialog.open()
+              await NetworkRequestUtil.put<null>(Constants.CART_SELECTED_API, {
+                selected: !this.isAllSelected
+              } as CartItemRequest)
+              CartManager.getInstance().updateCartCount() // 更新购物车数据
+              this.loadingDialog.close()
+            })
           Text('全选')
             .fontSize(14)
             .fontColor($r('app.color.black'))

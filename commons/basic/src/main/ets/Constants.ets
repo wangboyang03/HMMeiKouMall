@@ -32,6 +32,7 @@ export class Constants {
   static readonly CART_COUNT_API = "member/cart/count" // 购物车-数量
   static readonly CART_LIST_API = "member/cart" // 购物车-购物车列表
   static readonly CART_MODIFY_API = "member/cart/" // 购物车-修改单项
+  static readonly CART_SELECTED_API = "member/cart/selected" // 购物车-全选/取消全选
 }
 
 export class StackAddress {
