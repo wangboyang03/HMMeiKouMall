@@ -16,7 +16,7 @@ interface UploadRequest {
   onProgress: (progress: number) => void
 }
 
-export interface ResponseBasic<T> {
+interface ResponseBasic<T> {
   success: boolean
   message: string
   data: T
@@ -29,12 +29,6 @@ interface ChunksQueryResponse {
 
 interface ChunksQueryRequest {
   fileHash: string
-}
-
-interface chuckResponse {
-  fileHash: string
-  chunkIndex: number
-  totalChunks: number
 }
 
 interface FileMergeRequest {
@@ -51,8 +45,9 @@ interface PickFileResponse {
 export class FileUploadUtil {
   private static sInstance: FileUploadUtil
   private readonly DEFAULT_CHUNK_SIZE = 2 * 1024 * 1024 // 文件切片大小 2mb
-  private static readonly BASE_URL = "http://192.168.43.10:3000" // 服务器地址
+  private readonly BASE_URL = "http://192.168.43.10:3000" // 服务器地址
   private session = rcp.createSession()
+
   private constructor() {} // 私有构造函数
 
   /**
@@ -100,7 +95,7 @@ export class FileUploadUtil {
       const fileHash = await this.createFileHash(options.filePath)
       // 3. 获取切片信息 调用查询接口
       // const res = await NetworkRequestUtil.get<ResponseBasic<ChunksQueryResponse>>(`/api/upload/check`, {fileHash} as ChunksQueryRequest)
-      const res = await this._request<ChunksQueryResponse>(`${FileUploadUtil.BASE_URL}/api/upload/check`, 'GET', undefined, {fileHash} as ChunksQueryRequest)
+      const res = await this._request<ChunksQueryResponse>(`${this.BASE_URL}/api/upload/check`, 'GET', undefined, {fileHash} as ChunksQueryRequest)
       console.log('check raw res = ', JSON.stringify(res))
       if (res && res.data.uploadedChunks.length > 0) {
         // 存在返回值 不是首次上传 是断点续传
@@ -139,12 +134,7 @@ export class FileUploadUtil {
       await Promise.all(tasks)
 
       // 6.合并文件
-      // await NetworkRequestUtil.post<null>(`${FileUploadUtil.BASE_URL}/api/upload/merge`, {
-      //   fileHash,
-      //   fileName: options.fileName,
-      //   totalChunks
-      // } as FileMergeRequest)
-      const merge = await this._request<PickFileResponse>(`${FileUploadUtil.BASE_URL}/api/upload/merge`, 'POST', {
+      const merge = await this._request<PickFileResponse>(`${this.BASE_URL}/api/upload/merge`, 'POST', {
         fileHash,
         fileName: options.fileName,
         totalChunks
@@ -154,7 +144,6 @@ export class FileUploadUtil {
         const endTime = Date.now()
         Logger.info(`上传完成，耗时：${endTime - startTime}ms`)
       }
-      const endTime = Date.now()
     } catch (error) {
       console.log('error:', error)
       console.log('message:', error?.message)
@@ -206,64 +195,38 @@ export class FileUploadUtil {
       const end = Math.min(start + chunkSize, fileSize)
       const file = fileIo.openSync(options.filePath, fileIo.OpenMode.READ_ONLY)
       const buffer = new ArrayBuffer(end - start)
-      const reader = fileIo.readSync(file.fd, buffer, {
-        offset: start,
-        length: end - start
+      // const reader = fileIo.readSync(file.fd, buffer, {
+      //   offset: start,
+      //   length: end - start
+      // })
+
+      const content: rcp.FileContent = { content: buffer }
+      // const content= rcp.FormFieldFileValue('multipart/form-data', options.fileName, file.path)
+      const multiFormFieldValue: rcp.MultipartFormFieldValue = {
+        remoteFileName: options.fileName,
+        contentType: "multipart/form-data",
+        contentOrPath: content
+      }
+
+      const simpleFrom = new rcp.MultipartForm({
+        "chunk": multiFormFieldValue,
+        "fileHash": fileHash,
+        "chunkIndex": String(chunkIndex),
+        "totalChunks": String(totalChunks),
+        "fileName": options.fileName
       })
 
-      // const res = await this.session.uploadFromFile(`${FileUploadUtil.BASE_URL}/api/upload/chunk`, new rcp.UploadFromFile(reader))
-
-      // const tempPath = `${options.context.cacheDir}/chunk_${chunkIndex}.tmp` // 临时文件路径
-      // const tempFile = fileIo.openSync(tempPath, fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.CREATE | fileIo.OpenMode.TRUNC)
-      // fileIo.writeSync(tempFile.fd, buffer)
-      // fileIo.closeSync(file)
-      // const chunkUint8Array = new Uint8Array(buffer)
-
-      // const boundary = '----ohos' + Date.now()
-      // const body = this.buildMultipartBody(
-      //   boundary,
-      //   {
-      //     "fileHash": fileHash,
-      //     "chunkIndex": String(chunkIndex),
-      //     "totalChunks": String(totalChunks),
-      //     "fileName": options.fileName
-      //   },
-      //   'chunk',
-      //   chunkUint8Array
-      // )
-      // const request = new rcp.Request(
-      //   `${FileUploadUtil.BASE_URL}/api/upload/chunk`,
-      //   'POST',
-      //   {
-      //     'Content-Type': `multipart/form-data; boundary=${boundary}`
-      //   },
-      //   body
-      // )
-
-      const form = new rcp.Form({
-        chunk: reader,
-        fileHash,
-        chunkIndex: String(chunkIndex),
-        totalChunks: String(totalChunks),
-        fileName: options.fileName
-      })
-      const request = new rcp.Request(
-        `${FileUploadUtil.BASE_URL}/api/upload/chunk`,
-        'POST',
-        { 'Content-Type': `multipart/form-data` },
-        form
-      )
-      const res = (await this.session.fetch(request)).toString()
-      Logger.info( res)
+      try {
+        const request = new rcp.Request(this.BASE_URL+'/api/upload/chunk', 'POST', { 'Content-Type': 'multipart/form-data' }, simpleFrom)
+        const session = rcp.createSession()
+        const res = (await this.session.fetch(request)).toJSON()
+        // Logger.info(res)
+        return true
+      } catch (error) {
+        Logger.error('发送网络请求失败', error)
+        return false
+      }
       // const result = await this._request<PickFileResponse>(`${FileUploadUtil.BASE_URL}/api/upload/chunk`, 'POST', undefined, form)
-
-
-      // Logger.info(result)
-      // if (!result?.success) {
-      //   Logger.error('上传单个切片文件失败', result?.message)
-      //   return false
-      // }
-      return true
     } catch (error) {
       Logger.error('上传单个切片文件失败', error)
       return false
@@ -296,48 +259,17 @@ export class FileUploadUtil {
   }
 
   /**
-   * 构造multipartBody
-   * @param boundary
-   * @param fields
-   * @param fileFieldName
-   * @param fileData
-   * @returns Uint8Array
+   * 构建表单数据
+   * @param fileName 文件名
+   * @param pathOrContent 文件路径或文件内容
+   * @param contentType 文件类型
+   * @returns 表单数据
    */
-  buildMultipartBody(boundary: string, fields: Record<string, string>, fileFieldName: string, fileData: Uint8Array): Uint8Array {
-    const CRLF = '\r\n'
-    const encode = (str: string): Uint8Array => new Uint8Array(buffer.from(str).buffer)
-    const parts: Uint8Array[] = []
-
-    // 普通字段
-    const keys = Object.keys(fields)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      parts.push(encode(`--${boundary}${CRLF}`))
-      parts.push(encode(`Content-Disposition: form-data; name="${key}"${CRLF}${CRLF}`))
-      parts.push(encode(fields[key] + CRLF))
-    }
-
-    // 文件字段
-    parts.push(encode(`--${boundary}${CRLF}`))
-    parts.push(encode(`Content-Disposition: form-data; name="${fileFieldName}"; filename="chunk.bin"${CRLF}`))
-    parts.push(encode(`Content-Type: application/octet-stream${CRLF}${CRLF}`))
-    parts.push(fileData)
-    parts.push(encode(CRLF))
-
-    // 结束
-    parts.push(encode(`--${boundary}--${CRLF}`))
-
-    // merge
-    let total = 0
-    for (let i = 0; i < parts.length; i++) {
-      total += parts[i].length
-    }
-
-    const result = new Uint8Array(total)
-    let offset = 0
-    for (let i = 0; i < parts.length; i++) {
-      result.set(parts[i], offset)
-      offset += parts[i].length
+  private buildMultipartFormFieldValue(fileName: string | undefined, pathOrContent: rcp.Path | rcp.FileContent | rcp.GetDataCallback, contentType: string | undefined): rcp.MultipartFormFieldValue {
+    const result: rcp.MultipartFormFieldValue = {
+      remoteFileName: fileName,
+      contentType: contentType,
+      contentOrPath: pathOrContent
     }
     return result
   }
