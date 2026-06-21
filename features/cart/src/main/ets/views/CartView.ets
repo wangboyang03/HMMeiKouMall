@@ -1,7 +1,8 @@
 import { AppSafeArea, AppUserObject, BreakPoint, CartGoodsObject, CartGoodsItemModel, Constants, GuessingComponent, NavigationBar, StackAddress,
   NetworkRequestUtil,
   CartManager,
-  CartItemRequest} from 'basic'
+  CartItemRequest,
+  LoadingCustomDialog} from 'basic'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { AppStorageV2, PersistenceV2 } from '@kit.ArkUI'
 import { CartItem } from '../components'
@@ -17,6 +18,13 @@ export struct CartView {
   // @Local cartList: CartGoodsItemModel[] = []
   @Local isShowLeftIcon: boolean = HMRouterMgr.getCurrentParam() as boolean
   appCart?: CartGoodsObject = AppStorageV2.connect(CartGoodsObject, () => new CartGoodsObject())
+  loadingDialog = new CustomDialogController({
+    builder: LoadingCustomDialog({
+      message: "正在修改购物车,请稍后..."
+    }),
+    customStyle: true,
+    alignment: DialogAlignment.Center
+  })
 
   aboutToAppear(): void {
 
@@ -50,15 +58,26 @@ export struct CartView {
               ListItem() {
                 CartItem({
                   cart: cart,
-                  onChangeSelected: async selected => {},
+                  onChangeSelected: async selected => {
+                    this.loadingDialog.open()
+                    await NetworkRequestUtil.put<null>(`${Constants.CART_MODIFY_API}/${cart.skuId}`, {
+                      count: String(cart.count),
+                      selected
+                    } as CartItemRequest)
+                    // 刷新购物车数据
+                    CartManager.getInstance().updateCartCount()
+                    this.loadingDialog.close()
+                  },
                   onChangeCount: async count => {
-                    this.getUIContext().getPromptAction().showToast({ message: String(count) })
+                    this.loadingDialog.open()
+                    // this.getUIContext().getPromptAction().showToast({ message: String(count) })
                     await NetworkRequestUtil.put<null>(`${Constants.CART_MODIFY_API}/${cart.skuId}`, {
                       count: String(count),
                       selected: cart.selected
                     } as CartItemRequest)
                     // 刷新购物车数据
                     CartManager.getInstance().updateCartCount()
+                    this.loadingDialog.close()
                   }
                 })
               }

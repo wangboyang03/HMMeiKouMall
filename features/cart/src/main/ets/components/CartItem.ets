@@ -16,7 +16,8 @@ export struct CartItem {
         .select(this.cart.selected)// 和上级的item公用的是一个数据
         .onClick(() => {
           // 取反
-
+          this.cart.selected = !this.cart.selected
+          this.onChangeSelected(this.cart.selected) // 通知父组件更新
         })
       Image(this.cart.picture)
         .width(80)
