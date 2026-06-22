@@ -196,6 +196,5 @@ export struct AddressCreateView {
       bottom: this.safeArea.bottomHeight,
       // top: this.safeArea.topHeight
     })
-
   }
 }

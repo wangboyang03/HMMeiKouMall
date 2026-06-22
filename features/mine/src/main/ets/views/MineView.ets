@@ -1,10 +1,7 @@
-import { AppSafeArea, AppUserObject, BreakPoint, Constants,
-  FileUploadUtil,
-  GuessingComponent, StackAddress } from "basic"
+import { AppSafeArea, AppUserObject, BreakPoint, GuessingComponent, StackAddress } from "basic"
 import { AppStorageV2, PersistenceV2 } from "@kit.ArkUI"
 import { NavigationColumn } from "../components"
 import { HMRouterMgr } from "@hadss/hmrouter"
-import { common } from "@kit.AbilityKit"
 
 @ComponentV2
 export struct MineView {
@@ -19,20 +16,6 @@ export struct MineView {
           // header
           Column() {
             Row() {
-              Column() {
-                Button('点击上传文件').onClick(async ()=> {
-                  const file = await FileUploadUtil.getInstance().selectFileFromManager()
-                  if (!!file) {
-                    await FileUploadUtil.getInstance().upload({
-                      context: this.getUIContext().getHostContext() as common.Context,
-                      filePath: file.filePath,
-                      fileName: file.fileName,
-                      chunkSize: 2 * 1024 * 1024,
-                      onProgress: (progress) => {}
-                    })
-                  }
-                })
-              }
               Blank()
               if (this.appUser?.User?.token) {
                 Image($r('app.media.ic_public_settings'))
@@ -47,8 +30,6 @@ export struct MineView {
             .height(50)
 
             Row({ space: 16 }) {
-              // 头像
-              // Image(this.appUser?.User?.avatar ?? $r('app.media.ic_user_avatar'))
               Image(this.appUser?.User?.avatar && this.appUser.User.avatar !== '' ? this.appUser.User.avatar : $r('app.media.ic_user_avatar'))
                 .width(40)
                 .aspectRatio(1)
@@ -134,35 +115,30 @@ export struct MineView {
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_order'), text: '全部订单' })
                     .onClick(() => {
-                      // TODO 订单页，无参数
                     })
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_obligation'), text: '待付款' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=1
                     })
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unreceived'), text: '待发货' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=2
                     })
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unshipped'), text: '待收货' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=3
                     })
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unevaluated'), text: '待评价' })
                     .onClick(() => {
-                      // TODO 订单页，无参数 orderState=4
                     })
                 }
               }
@@ -171,7 +147,6 @@ export struct MineView {
             .backgroundColor($r('app.color.white'))
             .borderRadius(10)
 
-            // guess
             GuessingComponent()
           }
         }
@@ -184,4 +159,3 @@ export struct MineView {
     .backgroundColor($r('app.color.under'))
   }
 }
-
