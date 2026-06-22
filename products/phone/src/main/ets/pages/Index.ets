@@ -6,6 +6,7 @@ import { MineView } from 'mine'
 import { AppStorageV2, AttributeUpdater } from '@kit.ArkUI'
 import { HMNavigation } from '@hadss/hmrouter'
 import { emitter } from '@kit.BasicServicesKit'
+import { IntelligentAgentView } from 'intelligent'
 
 @Entry
 @ComponentV2
@@ -14,6 +15,7 @@ struct Index {
   list: TabItemParams[] = [
     { text: '首页', normal: $r('app.media.ic_public_home_normal'), active: $r('app.media.ic_public_home_active') },
     { text: '分类', normal: $r('app.media.ic_public_pro_normal'), active: $r('app.media.ic_public_pro_active') },
+    { text: '智能助手', normal: $r('sys.media.AI_phone'), active: $r('sys.media.AI_phone_doc') },
     { text: '购物袋', normal: $r('app.media.ic_public_cart_normal'), active: $r('app.media.ic_public_cart_active') },
     { text: '我的', normal: $r('app.media.ic_public_my_normal'), active: $r('app.media.ic_public_my_active') },
   ]
@@ -62,8 +64,11 @@ struct Index {
               } else if (index == 1) {
                 CategoryView()
               } else if (index == 2) {
-                CartView()
+                // 这里放智能助手
+                IntelligentAgentView()
               } else if (index == 3) {
+                CartView()
+              } else {
                 MineView()
               }
             }
@@ -98,10 +103,9 @@ struct Index {
     }
   }
 
-  @Builder
-  TabItemBuilder(item: TabItemParams, index: number) {
+  @Builder TabItemBuilder(item: TabItemParams, index: number) {
     Column() {
-      if (index == 2) {
+      if (index == 3) {
         Badge({
           count: this.appCart?.count,
           style: {}

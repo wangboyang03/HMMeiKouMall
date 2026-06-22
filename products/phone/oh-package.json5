@@ -9,6 +9,7 @@
     "basic": "file:../../commons/basic",
     "homepage": "file:../../features/homepage",
     "cart": "file:../../features/cart",
+    "intelligent": "file:../../features/intelligent",
     "category": "file:../../features/category",
     "mine": "file:../../features/mine"
   }
