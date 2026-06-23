@@ -4,7 +4,6 @@ import { KeyboardAvoidMode } from '@kit.ArkUI';
 import rcp from "@hms.collaboration.rcp";
 import { util } from "@kit.ArkTS";
 import { Message, Response, _RequestParams } from "../models";
-import { inputMethod } from "@kit.IMEKit";
 
 const api_url: string = "https://api.modelarts-maas.com/v2/chat/completions"
 const api_key: string = "vUaqycpKAzIAN5NtZmv7KxEfdkIVS6kY4fPw6VXpKj1GpnJtviw30YGV2LQ-RaAGbfOYO5nNpv1ZumYailJOzw"

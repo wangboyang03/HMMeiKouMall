@@ -37,6 +37,7 @@ export class Constants {
   static readonly HUAWEI_LOGIN_REQUEST_API = "login/huawei" // 华为登录请求
   static readonly GET_ADDRESS_API = "member/address" // 地址管理-获取列表
   static readonly ADD_ADDRESS_API = "member/address" // 地址管理-新增
+  static readonly PRE_ORDER_API = "member/order/pre" // 订单-获取结算信息
 }
 
 export class StackAddress {
@@ -50,4 +51,5 @@ export class StackAddress {
   static readonly CART_PAGE = "CartView" // 购物车页面
   static readonly ADDRESS_PAGE = "AddressView" // 地址页面
   static readonly EDIT_ADDRESS_PAGE = "EditAddressView" // 地址编辑页面
+  static readonly CHECK_PAGE = "CheckView" // 订单页面
 }

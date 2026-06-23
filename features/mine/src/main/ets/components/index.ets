@@ -1,4 +1,4 @@
 export * from './NavigationColumn'
-export * from './Cell'
-export * from './CellGroup'
+export * from 'basic/src/main/ets/components/Cell'
+export * from 'basic/src/main/ets/components/CellGroup'
 export * from './AddressItem'

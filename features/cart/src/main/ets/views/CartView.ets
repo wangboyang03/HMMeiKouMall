@@ -159,7 +159,9 @@ export struct CartView {
             .fontSize(14)
             .height(36)
             .backgroundColor($r('app.color.red'))
-            .onClick(() => {})
+            .onClick(() => HMRouterMgr.push({
+              pageUrl: StackAddress.CHECK_PAGE
+            }))
         }
         .height(50)
         .width('100%')
