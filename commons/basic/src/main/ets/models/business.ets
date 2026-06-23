@@ -248,3 +248,18 @@ export interface Property {
   propertyMainName: string;
   propertyValueName: string;
 }
+
+// 获取订单列表
+export interface OrderListResponse {
+  counts: number;
+  items: OrderItem[];
+  page: number;
+  pages: number;
+  pageSize: number;
+}
+
+export interface OrderListRequest {
+  orderState?: string;
+  page?: string;
+  pageSize?: string;
+}

@@ -114,32 +114,42 @@ export struct MineView {
               GridRow({ columns: 5 }) {
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_order'), text: '全部订单' })
-                    .onClick(() => {
-                    })
+                    .onClick(() => HMRouterMgr.push({
+                      pageUrl: StackAddress.ORDER_PAGE,
+                      param: 0
+                    }))
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_obligation'), text: '待付款' })
-                    .onClick(() => {
-                    })
+                    .onClick(() => HMRouterMgr.push({
+                      pageUrl: StackAddress.ORDER_PAGE,
+                      param: 1
+                    }))
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unreceived'), text: '待发货' })
-                    .onClick(() => {
-                    })
+                    .onClick(() => HMRouterMgr.push({
+                      pageUrl: StackAddress.ORDER_PAGE,
+                      param: 2
+                    }))
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unshipped'), text: '待收货' })
-                    .onClick(() => {
-                    })
+                    .onClick(() => HMRouterMgr.push({
+                      pageUrl: StackAddress.ORDER_PAGE,
+                      param: 3
+                    }))
                 }
 
                 GridCol() {
                   NavigationColumn({ icon: $r('app.media.ic_user_unevaluated'), text: '待评价' })
-                    .onClick(() => {
-                    })
+                    .onClick(() => HMRouterMgr.push({
+                      pageUrl: StackAddress.ORDER_PAGE,
+                      param: 4
+                    }))
                 }
               }
               .width('100%')
