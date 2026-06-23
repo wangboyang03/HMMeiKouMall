@@ -38,6 +38,7 @@ export class Constants {
   static readonly GET_ADDRESS_API = "member/address" // 地址管理-获取列表
   static readonly ADD_ADDRESS_API = "member/address" // 地址管理-新增
   static readonly PRE_ORDER_API = "member/order/pre" // 订单-获取结算信息
+  static readonly MEMBER_ORDER_API = "member/order" // 订单管理-新增订单
 }
 
 export class StackAddress {

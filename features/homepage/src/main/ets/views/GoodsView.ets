@@ -142,14 +142,9 @@ export struct GoodsView {
         }
 
         Row() {
-          Button('加入购物袋')
-            .buyButton($r('app.color.black'), true)
-            .onClick(() => {
-              this.showSheet = true
-            })
-          Button('立即购买')
-            .buyButton($r('app.color.red'), false)
-            .onClick(async () => {})
+          Button('就选它了！')
+            .buyButton($r('app.color.black'), true, true)
+            .onClick(() => this.showSheet = true)
         }
         .layoutWeight(1)
         .padding({ right: 16, left: 6 })
@@ -282,8 +277,10 @@ export struct GoodsView {
             this.addCartFromGoodsItem()
           })
         Button('立即购买')
-          .buyButton($r('app.color.red'), false)
-          .onClick(async () => {})
+          .buyButton($r('app.color.red'), false, true)
+          .onClick(async () => HMRouterMgr.push({
+            pageUrl: StackAddress.CHECK_PAGE
+          }))
       }
       .width('100%')
     }
@@ -304,7 +301,7 @@ export struct GoodsView {
   .fillColor($r('app.color.black'))
 }
 
-@Extend(Button) function buyButton(color: ResourceStr, isLeft: boolean) {
+@Extend(Button) function buyButton(color: ResourceStr, isLeft?: boolean, isRight?: boolean) {
   .fontSize(14)
   .height(36)
   .type(ButtonType.Normal)
@@ -313,8 +310,8 @@ export struct GoodsView {
   .borderRadius({
     topLeft: isLeft ? 18 : 0,
     bottomLeft: isLeft ? 18 : 0,
-    topRight: isLeft ? 0 : 18,
-    bottomRight: isLeft ? 0 : 18
+    topRight: isRight ? 18 : 0,
+    bottomRight: isRight ? 18 : 0
   })
   .pixelRound({
     end: PixelRoundCalcPolicy.FORCE_CEIL,

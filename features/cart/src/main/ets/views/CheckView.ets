@@ -1,4 +1,7 @@
-import { AppSafeArea, OrderGoodsItem, StackAddress, UserAddress, Summary, NavigationBar, Cell, NetworkRequestUtil, Constants, PreOrder} from 'basic'
+import { AppSafeArea, OrderGoodsItem, StackAddress, UserAddress, Summary, NavigationBar, Cell, NetworkRequestUtil, Constants, PreOrder,
+  CreateOrderParams,
+  CreateOrderResult,
+  CartManager} from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 
@@ -32,6 +35,17 @@ export struct CheckView {
     }
     this.loading = true
     // 调用创建订单接口
+    const memberOrderAPI = (data: CreateOrderParams) => NetworkRequestUtil.post<CreateOrderResult>(Constants.MEMBER_ORDER_API, data)
+    const res = await memberOrderAPI({
+      deliveryTimeType: 1,
+      payType: 1,
+      buyerMessage: "",
+      payChannel: 1,
+      goods: this.goodsList,
+      addressId: this.addressId
+    })
+    this.getUIContext().getPromptAction().showDialog({message: res.id}) // 拿到订单id
+    CartManager.getInstance().updateCartCount() // 更新购物车
   }
 
   @Builder
