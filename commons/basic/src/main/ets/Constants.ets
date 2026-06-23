@@ -15,6 +15,7 @@ export class Constants {
   // 包相关信息
   static readonly HOMEPAGE_MODULE_NAME = "homepage" // 首页模块名称
   static readonly REFRESH_PROMPT_SOUND = "sound.mp3" // 刷新提示音
+  static readonly INTELLIGENT_MODULE_NAME = "intelligent" // AI模块名称
 
   // 接口地址
   static readonly BANNER_API = "home/banner" // 首页轮播图

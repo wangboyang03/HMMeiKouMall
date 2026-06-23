@@ -1,9 +1,10 @@
-import { AppSafeArea, Logger, NavigationBar } from "basic";
+import { AppSafeArea, Constants, Logger, NavigationBar } from "basic";
 import { AppStorageV2 } from "@kit.ArkUI";
 import { KeyboardAvoidMode } from '@kit.ArkUI';
 import rcp from "@hms.collaboration.rcp";
 import { util } from "@kit.ArkTS";
 import { Message, Response, _RequestParams } from "../models";
+import { application } from "@kit.AbilityKit";
 
 const api_url: string = "https://api.modelarts-maas.com/v2/chat/completions"
 const api_key: string = "vUaqycpKAzIAN5NtZmv7KxEfdkIVS6kY4fPw6VXpKj1GpnJtviw30YGV2LQ-RaAGbfOYO5nNpv1ZumYailJOzw"
@@ -17,6 +18,7 @@ export struct IntelligentAgentView {
   @State responseData: string = ""
   @State textInput: string = ""
   Scroller?: Scroller = new Scroller()
+  @State words: string = ""
 
   async fetchSSEStreamAndParse() {
     // 1.在请求拦截器里夹带私货 注入token
@@ -103,7 +105,7 @@ export struct IntelligentAgentView {
       "max_tokens": 1024,
       "messages": [{
         role: "system",
-        content: "你是商城客服，可以回答用户购物问题，但是要遵守中国大陆地区相关法律规定。"
+        content: this.words
       }, {
         role: "user",
         content: this.textInput
@@ -127,10 +129,19 @@ export struct IntelligentAgentView {
     await this.fetchSSEStreamAndParse()
   }
 
+  async rawfileToJsonString() {
+    const moduleContext = await application.createModuleContext(this.getUIContext().getHostContext(), Constants.INTELLIGENT_MODULE_NAME)
+    const uni8Array = await moduleContext.resourceManager.getRawFileContent("rules.json")
+    const decoder = new util.TextDecoder()
+    const res = decoder.decodeToString(uni8Array)
+    this.words = JSON.stringify(JSON.parse(res))
+  }
+
   async aboutToAppear(): Promise<void> {
     // this.api_url = "https://api.modelarts-maas.com/v2/chat/completions"
     // this.api_key = "vUaqycpKAzIAN5NtZmv7KxEfdkIVS6kY4fPw6VXpKj1GpnJtviw30YGV2LQ-RaAGbfOYO5nNpv1ZumYailJOzw"
     // this.fetchSSEStreamAndParse()
+    this.rawfileToJsonString()
     this.getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.OFFSET) // 键盘避让 禁止TabBar遮挡输入框
   }
 

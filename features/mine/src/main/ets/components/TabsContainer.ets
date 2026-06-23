@@ -1,3 +1,5 @@
+import { Logger } from "basic"
+
 interface OrderType {
   id: number
   label: string
@@ -54,5 +56,89 @@ export struct TabsContainer {
     .padding({ left: 16, right: this.orderTypeList.length == i + 1 ? 16 : 0 })
     .layoutWeight(1)
     .justifyContent(FlexAlign.SpaceEvenly)
+  }
+}
+
+@ComponentV2
+export struct CustomTabs {
+  @Param @Once
+  activeIndex: number = 0
+  @Param tabConfig: OrderType[] = []
+  @Param @Once lineWidth: number = 20
+  @Param lineHeight: number = 2
+  @Param tabHeight: number = 40
+  @Param gutter: number = 20
+  @Param paddingLeft: number = this.gutter
+  @Param paddingRight: number = this.gutter
+  @Local left: number = 0
+  @Event onTabClick?: (tab: OrderType, index: number) => void
+  @Event onTabChange?: (tab: OrderType, index: number) => void
+  list: Area[] = []
+  @Param spaceBetween: boolean = false
+
+  // 设置线位置
+  setLineLeft(area: Area) {
+    // 先拿到每一个Item的宽度
+    const width = area.width as number
+    // 再拿到线条的位置
+    const x = area.position.x as number
+    this.left = x + (width - this.lineWidth) / 2
+  }
+
+  @Monitor('activeIndex')
+  onActiveIndexChange(monitor: IMonitor) {
+    this.setLineLeft(this.list?.[this.activeIndex])
+  }
+
+  build() {
+    Row() {
+      Row({ space: this.gutter }) {
+        ForEach(this.tabConfig, (item: OrderType, index) => {
+          this.TabBuilder(item, index)
+        })
+      }
+      .width('100%')
+      .padding({ left: this.paddingLeft, right: this.paddingRight })
+      .height(this.tabHeight)
+      .border({
+        width: { bottom: 0.5 },
+        color: $r('app.color.under')
+      })
+      .justifyContent(this.spaceBetween ? FlexAlign.SpaceBetween : FlexAlign.Start)
+
+      // 移动的文本
+      Text()
+        .width(this.lineWidth)
+        .height(this.lineHeight)
+        .backgroundColor($r('app.color.black'))
+        .position({ x: this.left, y: this.tabHeight - this.lineHeight })
+        .animation({ duration: 300 })
+    }
+    .layoutWeight(1)
+    .backgroundColor($r('app.color.white'))
+  }
+
+  @Builder TabBuilder(tab: OrderType, index: number) {
+    Text(tab.label)
+      .fontSize(15)
+      .fontColor(this.activeIndex === index ? $r('app.color.black') : $r('app.color.gray'))
+      .fontWeight(this.activeIndex === index ? 500 : 400)
+      .animation({
+        duration: 300
+      })
+      .onClick((e) => {
+        if (this.activeIndex != index) {
+          this.activeIndex = index
+          this.onTabChange && this.onTabChange(tab, index)
+        }
+        this.onTabClick && this.onTabClick(tab, index)
+      })
+      .onAreaChange((oldValue, newValue) => {
+        this.list[index] = newValue // 获取每一个TabItem的区域变化后的信息
+        Logger.info(this.list)
+        if (this.activeIndex == index) {
+          this.setLineLeft(this.list?.[this.activeIndex])
+        }
+      })
   }
 }
