@@ -53,4 +53,5 @@ export class StackAddress {
   static readonly ADDRESS_PAGE = "AddressView" // 地址页面
   static readonly EDIT_ADDRESS_PAGE = "EditAddressView" // 地址编辑页面
   static readonly CHECK_PAGE = "CheckView" // 订单页面
+  static readonly PAY_PAGE = "PayView" // 支付页面
 }
