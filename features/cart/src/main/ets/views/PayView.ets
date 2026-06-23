@@ -1,5 +1,5 @@
 import { HMRouter, HMRouterMgr } from "@hadss/hmrouter";
-import { AppSafeArea, Constants, LoadingCustomDialog, StackAddress } from "basic";
+import { AppSafeArea, Constants, LoadingCustomDialog, Logger, StackAddress } from "basic";
 import { webview } from "@kit.ArkWeb";
 import { AppStorageV2 } from "@kit.ArkUI";
 
@@ -31,6 +31,21 @@ export struct PayView {
       }).onPageEnd((_) => {
         this.loadingDialog.close()
       })
+        .onPageBegin((event) => {
+          Logger.info(event.url)
+          // 清空路由栈
+          if (event.url.includes("pay/redirect?payResult")) {
+            HMRouterMgr.getPathStack(StackAddress.MAIN_PAGE_ID)?.clear()
+            // 已经有支付结果了
+            HMRouterMgr.push({
+              pageUrl: StackAddress.PAY_RESULT_PAGE,
+              param: {
+                orderId: this.orderId,
+                payResult: event.url.includes("payResult=true")
+              }
+            })
+          }
+        })
     }
     .width("100%")
     .height("100%")
