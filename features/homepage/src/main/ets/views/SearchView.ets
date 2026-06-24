@@ -2,6 +2,7 @@ import { AppSafeArea, StackAddress } from 'basic'
 import { AppStorageV2 } from '@kit.ArkUI'
 import { HMRouter, HMRouterMgr } from '@hadss/hmrouter'
 import { SearchRouterParam } from '../models'
+import { AudioSearch } from '../components'
 
 @HMRouter({ pageUrl: StackAddress.SEARCH_PAGE })
 @ComponentV2
@@ -45,6 +46,8 @@ export struct SearchView {
         colors: [[$r('app.color.linear_begin'), 0], [$r('app.color.linear_end'), 1]]
       })
       // 语音搜索组件
+
+      AudioSearch()
     }
   }
 }
