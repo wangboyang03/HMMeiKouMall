@@ -47,7 +47,17 @@ export struct SearchView {
       })
       // 语音搜索组件
 
-      AudioSearch()
+      AudioSearch({
+        onChange: (keyword) => {
+          this.keyword = keyword.replace(/\s+/g, '')
+        },
+        onComplete: (keyword) => {
+          HMRouterMgr.push({
+            pageUrl: StackAddress.SEARCH_RESULT_PAGE,
+            param: { keyword: keyword.replace(/\s+/g, '') } as SearchRouterParam
+          })
+        }
+      })
     }
   }
 }

@@ -9,13 +9,15 @@ export enum VoiceState {
   VOICEOVER
 }
 
-@Component
+@ComponentV2
 export struct AudioSearch {
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
-  @State voiceState: VoiceState = VoiceState.DEFAULT // 当前语音状态
+  @Local voiceState: VoiceState = VoiceState.DEFAULT // 当前语音状态
   keyword?: string
   asrEngine?: speechRecognizer.SpeechRecognitionEngine
   audioCapturer?: audio.AudioCapturer
+  @Event onChange: (keyword: string) => void = () => {}
+  @Event onComplete: (keyword: string) => void = () => {}
 
   aboutToAppear(): void {
     this.getUIContext().setKeyboardAvoidMode(KeyboardAvoidMode.RESIZE) // 键盘避让
@@ -41,15 +43,15 @@ export struct AudioSearch {
         },
         // 识别结果回调，包括中间结果和最终结果
         onResult(sessionId: string, result: speechRecognizer.SpeechRecognitionResult) {
-          // this.onChange(result.result)
-          // this.keyword = result.result
+          this.onChange(result.result)
+          this.keyword = result.result
           Logger.info(sessionId, JSON.stringify(result))
         },
         // 识别完成回调
         onComplete(sessionId: string, eventMessage: string) {
           this.voiceState = VoiceState.DEFAULT
-          // this.onComplete(this.keyword)
-          // this.keyword = ''
+          this.onComplete(this.keyword)
+          this.keyword = ""
           Logger.info(sessionId, JSON.stringify(eventMessage))
         },
         // 错误回调，错误码通过本方法返回
