@@ -89,7 +89,9 @@ export struct MineView {
               }
 
               GridCol() {
-                NavigationColumn({ icon: $r('app.media.ic_user_history'), text: '我的足迹', color: $r('app.color.text') }).onClick(() => {})
+                NavigationColumn({ icon: $r('app.media.ic_user_history'), text: '我的足迹', color: $r('app.color.text') }).onClick(() => HMRouterMgr.push({
+                  pageUrl: StackAddress.MAP_PAGE
+                }))
               }
 
               GridCol() {

@@ -8,7 +8,7 @@ import { getAddressListApi } from '../api'
 @ComponentV2
 export struct AddressView {
   @Local addressList: AddressResponse[] = []
-  safeArea: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())!
+  safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
 
   // 获取地址列表
   async getAddressList() {
@@ -124,8 +124,8 @@ export struct AddressView {
     .height('100%')
     .backgroundColor('#F5F4F9')
     .padding({
-      bottom: this.safeArea.bottomHeight,
-      // top: this.safeArea.topHeight
+      bottom: this.safeAreaValue?.bottomHeight,
+      // top: this.safeAreaValue?.topHeight
     })
   }
 
