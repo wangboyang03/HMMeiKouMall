@@ -13,3 +13,11 @@ import { BreakPointEnum } from "../Constants"
 @ObservedV2 export class AppCategoryData {
   @Trace category: CategoryItem[] = []
 }
+
+@ObservedV2 export class ContextData {
+  context?: Context
+
+  constructor(module: Context) {
+    this.context = module
+  }
+}

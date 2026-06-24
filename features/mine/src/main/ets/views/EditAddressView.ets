@@ -23,7 +23,7 @@ export struct AddressCreateView {
 
   async getLocation() {
     // 1.检查权限
-    ATManager.getInstance().mContext = this.getUIContext().getHostContext()
+    // ATManager.getInstance().mContext = this.getUIContext().getHostContext()
     const firstCheck = await ATManager.getInstance().getAccessFromUser(['ohos.permission.LOCATION', 'ohos.permission.APPROXIMATELY_LOCATION'])
     if (!firstCheck) {
       const secondCheck = await ATManager.getInstance().getAccessFromSetting(['ohos.permission.LOCATION', 'ohos.permission.APPROXIMATELY_LOCATION'])

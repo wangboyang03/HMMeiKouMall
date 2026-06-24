@@ -1,7 +1,7 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
-import { window } from '@kit.ArkUI';
-import { ScreenAreaManager, ScreenManager } from 'basic';
+import { AppStorageV2, window } from '@kit.ArkUI';
+import { ContextData, ScreenAreaManager, ScreenManager } from 'basic';
 import { HMRouterMgr } from '@hadss/hmrouter';
 
 const DOMAIN = 0x0000;
@@ -12,6 +12,7 @@ export default class PhoneAbility extends UIAbility {
     HMRouterMgr.init({context: this.context}) // 初始化HMRouter
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
+      AppStorageV2.connect(ContextData, () => new ContextData(this.context)) // 持久化上下文对象
     } catch (err) {
       hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
