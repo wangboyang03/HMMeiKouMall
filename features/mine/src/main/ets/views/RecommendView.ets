@@ -1,0 +1,96 @@
+import { HMRouter, HMRouterMgr } from "@hadss/hmrouter"
+import { AppSafeArea, GoodsItem, NavigationBar, StackAddress } from "basic"
+import { AppStorageV2 } from "@kit.ArkUI"
+
+@HMRouter({pageUrl: StackAddress.RECOMMEND_PAGE})
+@Component
+export struct RecommendView {
+  @State list: GoodsItem[] = []
+  swiperController: SwiperController = new SwiperController()
+  safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+
+  build() {
+    Column() {
+      Column() {
+        // 顶部导航栏
+        Stack({ alignContent: Alignment.TopStart }) {
+          // banner
+          Image($r("app.media.ic_public_hot_banner_bg"))
+            .width('100%')
+          NavigationBar({
+            bgColor: Color.Transparent,
+            onLeftClick: () => {
+              HMRouterMgr.getPathStack(StackAddress.MAIN_PAGE_ID)?.clear()
+              HMRouterMgr.pop()
+            }
+          })
+        }
+
+        // 轮播图
+        Column() {
+          Swiper(this.swiperController) {
+            ForEach(this.list, (item: GoodsItem) => {
+                Column() {
+                  Image(item.picture)
+                    .width('100%')
+                  Text(item.name)
+                    .margin({
+                      top: 10
+                    })
+                    .fontSize(14)
+                    .fontColor('#434343')
+
+                  Text(`￥${item.price}`)
+                    .margin({
+                      top: 10
+                    })
+                    .fontSize(20)
+                    .fontColor('#191919')
+                    .fontWeight(700)
+                }
+                .padding(30)
+                .backgroundColor('#fff')
+              }
+            )
+          }
+          .width(270)
+          .borderRadius(16)
+          .indicator(
+            new DotIndicator()
+              .itemWidth(6)
+              .itemHeight(6)
+              .selectedItemWidth(6)
+              .selectedItemHeight(6)
+              .color('#E9E8EC')
+              .selectedColor('#191919')
+          )
+        }
+        .margin({
+          top: -60
+        })
+
+        // 操作按钮
+        Row() {
+          Row() {
+            Text('换一批看看')
+              .fontSize(16)
+              .fontColor('#fff')
+          }
+          .width('100%')
+          .height(46)
+          .justifyContent(FlexAlign.Center)
+          .backgroundColor('#00C6C6')
+          .onClick(async () => {
+          })
+        }
+        .width('100%')
+        .padding({
+          left: 16,
+          right: 16
+        })
+        .layoutWeight(1)
+        .backgroundColor('#F5F4F9')
+      }
+    }
+  }
+}
