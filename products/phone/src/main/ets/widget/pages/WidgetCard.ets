@@ -1,7 +1,11 @@
-@Entry
+const storageDataFormCardByMessage = new LocalStorage()
+
+@Entry(storageDataFormCardByMessage)
 @Component
 struct WidgetCard {
   fileNameList: string[] = new Array(2).fill('')
+  @LocalStorageProp('message') message: string = ""
+
   /*
    * The title.
    */
@@ -17,7 +21,7 @@ struct WidgetCard {
   /*
    * The message.
    */
-  readonly message: string = 'add detail';
+  // readonly message: string = 'add detail';
   /*
    * The width percentage setting.
    */
@@ -30,7 +34,7 @@ struct WidgetCard {
   build() {
     Column() {
       Row() {
-        Text('今日推荐')
+        Text(this.message)
           .fontColor($r('app.color.white'))
           .fontSize(16)
       }

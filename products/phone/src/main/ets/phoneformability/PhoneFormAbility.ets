@@ -1,11 +1,20 @@
-import { formBindingData, FormExtensionAbility, formInfo } from '@kit.FormKit';
+import { formBindingData, FormExtensionAbility, formInfo, formProvider } from '@kit.FormKit';
 import { Want } from '@kit.AbilityKit';
 
 export default class PhoneFormAbility extends FormExtensionAbility {
   onAddForm(want: Want) {
     // Called to return a FormBindingData object.
-    const formData = '';
-    return formBindingData.createFormBindingData(formData);
+    const formId = want.parameters && String(want.parameters["ohos.extra.param.key.form_identity"])
+    setTimeout(() => {
+      formProvider.updateForm(formId, formBindingData.createFormBindingData({
+        message: "10秒钟已经到了"
+      }))
+    }, 10000)
+
+
+    return formBindingData.createFormBindingData({
+      message: "猜你喜欢"
+    });
   }
 
   onCastToNormalForm(formId: string) {
