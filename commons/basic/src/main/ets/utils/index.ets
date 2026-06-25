@@ -9,3 +9,4 @@ export * from './UserAuth' // 用户权限
 export * from './CartManager' // 购物车管理
 export * from './HuaweiLoginAuth' // 华为登录
 export * from './ATManager'
+export * from './DownloadManager'

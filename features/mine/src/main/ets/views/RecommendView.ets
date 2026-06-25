@@ -1,7 +1,8 @@
 import { HMRouter, HMRouterMgr } from "@hadss/hmrouter"
-import { AppSafeArea, GoodsItem, NavigationBar, StackAddress } from "basic"
+import { AppSafeArea, DownloadManager, GoodsItem, NavigationBar, StackAddress } from "basic"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { getGuessDataApi } from '../api'
+import common from "@ohos.app.ability.common"
 
 @HMRouter({pageUrl: StackAddress.RECOMMEND_PAGE})
 @Component
@@ -13,6 +14,12 @@ export struct RecommendView {
   async aboutToAppear(): Promise<void> {
     const res = await getGuessDataApi()
     this.list = res.items
+    // 遍历接口所有数组里的图片
+    let imageList: string[] = []
+    for (let i = 0; i < 3; i++) {
+      imageList.push(res.items[i].picture)
+    }
+    DownloadManager.getInstance().downloadImageList(this.getUIContext().getHostContext() as common.Context, imageList)
   }
 
   build() {

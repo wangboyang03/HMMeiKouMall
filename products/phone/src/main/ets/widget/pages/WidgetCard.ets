@@ -3,7 +3,7 @@ const storageDataFormCardByMessage = new LocalStorage()
 @Entry(storageDataFormCardByMessage)
 @Component
 struct WidgetCard {
-  fileNameList: string[] = new Array(2).fill('')
+  @LocalStorageProp("imageList") fileNameList: string[] = new Array(2).fill('')
   @LocalStorageProp('message') message: string = ""
 
   /*
@@ -43,11 +43,9 @@ struct WidgetCard {
       .justifyContent(FlexAlign.Center)
 
       Row() {
-        ForEach(
-          this.fileNameList,
-          (url: string) => {
+        ForEach(this.fileNameList, (url: string) => {
             Row() {
-              Image('')
+              Image(`memory://` + url)
                 .borderRadius(12)
                 .width(50)
                 .aspectRatio(1)

@@ -12,7 +12,7 @@ export interface GoodsItem {
   name: string
   desc: string
   price: string
-  picture: ResourceStr
+  picture: string
   orderNum: number
 }
 
