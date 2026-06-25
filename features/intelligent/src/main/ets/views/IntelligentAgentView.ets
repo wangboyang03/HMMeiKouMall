@@ -134,6 +134,9 @@ export struct IntelligentAgentView {
     const uni8Array = await moduleContext.resourceManager.getRawFileContent("rules.json")
     const decoder = new util.TextDecoder()
     const res = decoder.decodeToString(uni8Array)
+    // 读出的是对象 需要取出对象里的value
+    const parsedData = JSON.parse(res) as Record<string, string>
+    this.words = parsedData['rules'] ?? ''
     this.words = JSON.stringify(JSON.parse(res))
   }
 
