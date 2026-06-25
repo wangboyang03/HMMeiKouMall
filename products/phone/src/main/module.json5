@@ -25,17 +25,29 @@
       {
         "name": "ohos.permission.LOCATION",
         "reason": "$string:use_location_reason",
-        "usedScene" : {"abilities": ["PhoneAbility"]}
+        "usedScene": {
+          "abilities": [
+            "PhoneAbility"
+          ]
+        }
       },
       {
         "name": "ohos.permission.APPROXIMATELY_LOCATION",
         "reason": "$string:use_location_reason",
-        "usedScene" : {"abilities": ["PhoneAbility"]}
+        "usedScene": {
+          "abilities": [
+            "PhoneAbility"
+          ]
+        }
       },
       {
         "name": "ohos.permission.MICROPHONE",
         "reason": "$string:use_microphone_reason",
-        "usedScene": {"abilities": ["PhoneAbility"]}
+        "usedScene": {
+          "abilities": [
+            "PhoneAbility"
+          ]
+        }
       }
     ],
     "abilities": [
@@ -72,11 +84,26 @@
             "resource": "$profile:backup_config"
           }
         ]
+      },
+      {
+        "name": "PhoneFormAbility",
+        "srcEntry": "./ets/phoneformability/PhoneFormAbility.ets",
+        "label": "$string:PhoneFormAbility_label",
+        "description": "$string:PhoneFormAbility_desc",
+        "type": "form",
+        "metadata": [
+          {
+            "name": "ohos.extension.form",
+            "resource": "$profile:form_config"
+          }
+        ]
       }
     ],
-    "metadata": [{
-      "name": "client_id",
-      "value": "111009537"
-    }]
+    "metadata": [
+      {
+        "name": "client_id",
+        "value": "111009537"
+      }
+    ]
   }
 }

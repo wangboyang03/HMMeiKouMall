@@ -19,6 +19,22 @@
     {
       "name": "use_microphone_reason",
       "value": "美蔻商城想要申请用户设备麦克风权限来使用语音搜索能力，如果拒绝使用麦克风权限，相关功能将不可用。"
+    },
+    {
+      "name": "PhoneFormAbility_desc",
+      "value": "form_description"
+    },
+    {
+      "name": "PhoneFormAbility_label",
+      "value": "form_label"
+    },
+    {
+      "name": "widget_desc",
+      "value": "This is a service widget."
+    },
+    {
+      "name": "widget_display_name",
+      "value": "widget"
     }
   ]
 }

@@ -1,4 +1,4 @@
-import { abilityAccessCtrl, Permissions } from "@kit.AbilityKit";
+import { abilityAccessCtrl, Permissions, Want } from "@kit.AbilityKit";
 import { AppStorageV2 } from "@kit.ArkUI";
 import { ContextData } from "../models/appDataShare";
 
