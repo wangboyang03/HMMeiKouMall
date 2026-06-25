@@ -1,6 +1,7 @@
 import { formBindingData, FormExtensionAbility, formInfo, formProvider } from '@kit.FormKit';
 import { Want } from '@kit.AbilityKit';
-import { DownloadManager } from 'basic';
+import { AppRecommend, DownloadManager } from 'basic';
+import { AppStorageV2 } from '@kit.ArkUI';
 
 export default class PhoneFormAbility extends FormExtensionAbility {
   onAddForm(want: Want) {
@@ -20,7 +21,8 @@ export default class PhoneFormAbility extends FormExtensionAbility {
 
 
     return formBindingData.createFormBindingData({
-      message: "猜你喜欢"
+      message: "猜你喜欢",
+      formId
     });
   }
 

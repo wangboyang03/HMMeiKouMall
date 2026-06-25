@@ -1,10 +1,23 @@
 import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { AppStorageV2, window } from '@kit.ArkUI';
-import { ContextData, ScreenAreaManager, ScreenManager } from 'basic';
+import { AppRecommend, Constants, ContextData, DownloadManager, Logger, ScreenAreaManager, ScreenManager, StackAddress } from 'basic';
+import { getGuessDataApi } from "mine";
+
 import { HMRouterMgr } from '@hadss/hmrouter';
+import { rpc } from '@kit.IPCKit';
+import { formBindingData, formProvider } from '@kit.FormKit';
 
 const DOMAIN = 0x0000;
+
+class Params implements rpc.Parcelable {
+  marshalling(messageSequence: rpc.MessageSequence): boolean {
+    return true
+  }
+  unmarshalling(messageSequence: rpc.MessageSequence): boolean {
+    return true
+  }
+}
 
 export default class PhoneAbility extends UIAbility {
   screenManager?: ScreenManager
@@ -22,6 +35,29 @@ export default class PhoneAbility extends UIAbility {
         this.targetPage = want.parameters?.targetPage as string
       }
 
+      this.callee.on(Constants.REFRESH_IMAGE_LIST, (data) => {
+        const res = JSON.parse(data.readString()) as Record<string, string>
+        // Logger.info(res)
+        getGuessDataApi().then(async (data) => {
+          data.items.sort(() => Math.random() - 0.5) // 打乱数组顺序 直接打乱 res.items,不要封装函数，直接打乱
+          const urls = data.items.slice(0, 2).map(value => value.picture as string)  // 获取开头两个图片地址
+          const downLoadImages = await DownloadManager.getInstance().downloadImageList(this.context, urls) // 下载图片到沙箱返回沙箱地址
+          const formImages = DownloadManager.getInstance().createFormImages(downLoadImages) // 转成FormImage对象
+          // 下载完毕通知卡片刷新
+         formProvider.updateForm(res.formId, formBindingData.createFormBindingData({
+           formImages,
+           imageList: downLoadImages
+          }))
+          Logger.error(downLoadImages)
+          // 这样做是为了让卡片看到的内容和点进去的内容一致
+          const appRecommendData = AppStorageV2.connect(AppRecommend, () => new AppRecommend())
+          if (appRecommendData) {
+            appRecommendData.recommendList = data.items
+          }
+        })
+        return new Params() // 只是为了不报错
+      })
+
     } catch (err) {
       hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
@@ -32,8 +68,10 @@ export default class PhoneAbility extends UIAbility {
     // 热启动
     if (want.parameters?.targetPage) {
       // 根据 want 的参数打开指定页面
+      HMRouterMgr.getPathStack(StackAddress.MAIN_PAGE_ID)?.clear()
       HMRouterMgr.push({
-        pageUrl: want.parameters.targetPage as string
+        pageUrl: want.parameters.targetPage as string,
+        animator: false
       })
     }
   }

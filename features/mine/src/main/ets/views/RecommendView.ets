@@ -1,5 +1,7 @@
 import { HMRouter, HMRouterMgr } from "@hadss/hmrouter"
-import { AppSafeArea, DownloadManager, GoodsItem, NavigationBar, StackAddress } from "basic"
+import { AppRecommend, AppSafeArea, DownloadManager, GoodsItem,
+  LoadingCustomDialog,
+  NavigationBar, StackAddress } from "basic"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { getGuessDataApi } from '../api'
 import common from "@ohos.app.ability.common"
@@ -7,19 +9,24 @@ import common from "@ohos.app.ability.common"
 @HMRouter({pageUrl: StackAddress.RECOMMEND_PAGE})
 @Component
 export struct RecommendView {
-  @State list: GoodsItem[] = []
+  // @State list: GoodsItem[] = []
   swiperController: SwiperController = new SwiperController()
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+  recommendData?: AppRecommend = AppStorageV2.connect(AppRecommend, () => new AppRecommend())
+  loadingDialog = new CustomDialogController({
+    builder: LoadingCustomDialog({
+      message: '好物马上就来'
+    }),
+    customStyle: true
+  })
 
   async aboutToAppear(): Promise<void> {
-    const res = await getGuessDataApi()
-    this.list = res.items
-    // 遍历接口所有数组里的图片
-    let imageList: string[] = []
-    for (let i = 0; i < 3; i++) {
-      imageList.push(res.items[i].picture)
+    if (!this.recommendData?.recommendList.length) {
+      this.loadingDialog.open()
+      const res = await getGuessDataApi()
+      this.recommendData!.recommendList = res.items
+      this.loadingDialog.close()
     }
-    DownloadManager.getInstance().downloadImageList(this.getUIContext().getHostContext() as common.Context, imageList)
   }
 
   build() {
@@ -42,7 +49,7 @@ export struct RecommendView {
         // 轮播图
         Column() {
           Swiper(this.swiperController) {
-            ForEach(this.list, (item: GoodsItem) => {
+            ForEach(this.recommendData?.recommendList, (item: GoodsItem) => {
                 Column() {
                   Image(item.picture)
                     .width('100%')
@@ -111,7 +118,9 @@ export struct RecommendView {
             res.items[i] = res.items[j]
             res.items[j] = temp
           }
-          this.list = res.items
+          if (this.recommendData) {
+            this.recommendData.recommendList = res.items
+          }
         })
       }
       .width('100%')

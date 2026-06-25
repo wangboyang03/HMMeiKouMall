@@ -48,3 +48,7 @@ export interface GuessLikeResponse {
   pages: number;
   pageSize: number;
 }
+
+@ObservedV2 export class AppRecommend {
+  @Trace recommendList: GoodsItem[] = []
+}

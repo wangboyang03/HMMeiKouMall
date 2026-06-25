@@ -11,6 +11,7 @@ export class Constants {
   static readonly SUCCESS_CODE = 1 // 请求成功码
   static readonly TIME_OUT = 10000 // 请求超时时间
   static readonly SWITCH_HOMEPAGE = "switch_homepage_event" // 切换首页事件名
+  static readonly REFRESH_IMAGE_LIST = "RefreshImageList" // 刷新图片列表事件名
 
   // 包相关信息
   static readonly HOMEPAGE_MODULE_NAME = "homepage" // 首页模块名称

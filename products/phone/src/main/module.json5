@@ -48,6 +48,9 @@
             "PhoneAbility"
           ]
         }
+      },
+      {
+        "name": "ohos.permission.KEEP_BACKGROUND_RUNNING"
       }
     ],
     "abilities": [

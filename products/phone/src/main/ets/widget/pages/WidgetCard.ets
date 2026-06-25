@@ -1,15 +1,14 @@
+import { Constants } from 'basic'
+
 const storageDataFormCardByMessage = new LocalStorage()
 
 @Entry(storageDataFormCardByMessage)
 @Component
 struct WidgetCard {
-  @LocalStorageProp("imageList") fileNameList: string[] = new Array(2).fill('')
+  @LocalStorageProp("imageList") fileNameList: string[] = []
   @LocalStorageProp('message') message: string = ""
+  @LocalStorageProp("formId") formId: string = ""
 
-  /*
-   * The title.
-   */
-  readonly title: string = '美蔻商城';
   /*
    * The action type.
    */
@@ -18,25 +17,29 @@ struct WidgetCard {
    * The ability name.
    */
   readonly abilityName: string = 'PhoneAbility';
-  /*
-   * The message.
-   */
-  // readonly message: string = 'add detail';
-  /*
-   * The width percentage setting.
-   */
-  readonly fullWidthPercent: string = '100%';
-  /*
-   * The height percentage setting.
-   */
-  readonly fullHeightPercent: string = '100%';
+
+
 
   build() {
     Column() {
-      Row() {
+      Row({space: 5}) {
         Text(this.message)
           .fontColor($r('app.color.white'))
           .fontSize(16)
+        Image($r('app.media.ic_public_rotate'))
+          .fillColor(Color.White)
+          .width(20)
+          .onClick(() => {
+            postCardAction(this, {
+              action: "call", // 拉起应用的模式
+              abilityName: this.abilityName, // 拉起应用能力名称
+              params: {
+                // 卡片传递给应用的参数 应用在UIAbility里 冷启动onCreate 热启动onNewWant接收消息
+                formId: this.formId,
+                method: Constants.REFRESH_IMAGE_LIST
+              }
+            })
+          })
       }
       .height(40)
       .width('100%')
