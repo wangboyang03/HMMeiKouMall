@@ -1,6 +1,7 @@
 import { HMRouter, HMRouterMgr } from "@hadss/hmrouter"
 import { AppSafeArea, GoodsItem, NavigationBar, StackAddress } from "basic"
 import { AppStorageV2 } from "@kit.ArkUI"
+import { getGuessDataApi } from '../api'
 
 @HMRouter({pageUrl: StackAddress.RECOMMEND_PAGE})
 @Component
@@ -8,6 +9,11 @@ export struct RecommendView {
   @State list: GoodsItem[] = []
   swiperController: SwiperController = new SwiperController()
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
+
+  async aboutToAppear(): Promise<void> {
+    const res = await getGuessDataApi()
+    this.list = res.items
+  }
 
   build() {
     Column() {
@@ -68,29 +74,46 @@ export struct RecommendView {
         .margin({
           top: -60
         })
+      }
+      .height('80%')
+      .justifyContent(FlexAlign.Start)
+      .linearGradient({
+        angle: 180,
+        colors: [
+          ['#51E1F8', 0],
+          ['#F5F4F9', 1]
+        ]
+      })
 
-        // 操作按钮
+      // 操作按钮
+      Row() {
         Row() {
-          Row() {
-            Text('换一批看看')
-              .fontSize(16)
-              .fontColor('#fff')
-          }
-          .width('100%')
-          .height(46)
-          .justifyContent(FlexAlign.Center)
-          .backgroundColor('#00C6C6')
-          .onClick(async () => {
-          })
+          Text('换一批看看')
+            .fontSize(16)
+            .fontColor('#fff')
         }
         .width('100%')
-        .padding({
-          left: 16,
-          right: 16
+        .height(46)
+        .justifyContent(FlexAlign.Center)
+        .backgroundColor('#00C6C6')
+        .onClick(async () => {
+          const res = await getGuessDataApi()
+          for (let i = res.items.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1))
+            const temp = res.items[i]
+            res.items[i] = res.items[j]
+            res.items[j] = temp
+          }
+          this.list = res.items
         })
-        .layoutWeight(1)
-        .backgroundColor('#F5F4F9')
       }
+      .width('100%')
+      .padding({
+        left: 16,
+        right: 16
+      })
+      .layoutWeight(1)
+      .backgroundColor('#F5F4F9')
     }
   }
 }

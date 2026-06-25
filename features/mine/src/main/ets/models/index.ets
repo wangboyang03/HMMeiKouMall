@@ -1,3 +1,5 @@
+import { GoodsItem } from "basic"
+
 export interface LoginForm {
   account: string
   password: string
@@ -97,4 +99,12 @@ export interface TextInputParams {
     this.receiver = item.receiver
     this.isDefault = item.isDefault
   }
+}
+
+export interface RecommendData {
+  counts: number;
+  items: GoodsItem[];
+  page: number;
+  pages: number;
+  pageSize: number;
 }

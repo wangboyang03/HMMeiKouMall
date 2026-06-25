@@ -71,7 +71,7 @@ struct WidgetCard {
           abilityName: this.abilityName, // 拉起应用能力名称
           params: {
             // 卡片传递给应用的参数 应用在UIAbility里 冷启动onCreate 热启动onNewWant接收消息
-            message: this.message
+            targetPage: "RecommendView"
           }
         })
       })

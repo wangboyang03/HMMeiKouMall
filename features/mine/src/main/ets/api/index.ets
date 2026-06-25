@@ -1,5 +1,5 @@
 import { Constants, LoginResponseViewModel, NetworkRequestUtil } from "basic";
-import { AddAddressRequest, AddressResponse, HuaweiLoginRequest, LoginFormViewModel } from "../models";
+import { AddAddressRequest, AddressResponse, HuaweiLoginRequest, LoginFormViewModel, RecommendData,  } from "../models";
 
 export const LoginRequestApi = (params: LoginFormViewModel) => NetworkRequestUtil.post<LoginResponseViewModel>(Constants.LOGIN_API, params)
 
@@ -11,3 +11,5 @@ export const getAddressListApi = () => NetworkRequestUtil.get<AddressResponse[]>
 export const addAddressApi = (data: AddAddressRequest) => NetworkRequestUtil.post<null>(Constants.ADD_ADDRESS_API, data)
 
 export const updateAddressApi = (data: AddAddressRequest) => NetworkRequestUtil.put<null>(`${Constants.ADD_ADDRESS_API}/{${data.id}}`, data)
+
+export const getGuessDataApi = (params?: object) => NetworkRequestUtil.get<RecommendData>(Constants.GUESS_LICK_API, params)

@@ -8,15 +8,34 @@ const DOMAIN = 0x0000;
 
 export default class PhoneAbility extends UIAbility {
   screenManager?: ScreenManager
+  private targetPage?: string
+  private timer?: number
+
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     HMRouterMgr.init({context: this.context}) // 初始化HMRouter
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
       AppStorageV2.connect(ContextData, () => new ContextData(this.context)) // 持久化上下文对象
+
+      // 记录卡片参数 不能跳转
+      if (want.parameters?.targetPage) {
+        this.targetPage = want.parameters?.targetPage as string
+      }
+
     } catch (err) {
       hilog.error(DOMAIN, 'testTag', 'Failed to set colorMode. Cause: %{public}s', JSON.stringify(err));
     }
     hilog.info(DOMAIN, 'testTag', '%{public}s', 'Ability onCreate');
+  }
+
+  onNewWant(want: Want, _: AbilityConstant.LaunchParam): void {
+    // 热启动
+    if (want.parameters?.targetPage) {
+      // 根据 want 的参数打开指定页面
+      HMRouterMgr.push({
+        pageUrl: want.parameters.targetPage as string
+      })
+    }
   }
 
   onDestroy(): void {
@@ -30,6 +49,15 @@ export default class PhoneAbility extends UIAbility {
     this.screenManager = new ScreenManager(this.context)
     this.screenManager.initBreakPoint() // 初始化断点工具并监听窗口宽度变化
     ScreenAreaManager.getInstance().openFullScreen(this.context) // 开启全屏模式
+
+    // 此时可以跳转
+    this.timer = setTimeout(()=>{
+      if (this.targetPage) {
+        HMRouterMgr.push({
+          pageUrl: this.targetPage
+        })
+      }
+    }, 100)
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {
         hilog.error(DOMAIN, 'testTag', 'Failed to load the content. Cause: %{public}s', JSON.stringify(err));
@@ -43,6 +71,7 @@ export default class PhoneAbility extends UIAbility {
     // Main window is destroyed, release UI related resources
     this.screenManager?.unregister()
     ScreenAreaManager.getInstance().closeFullScreen(this.context) // 关闭全屏模式
+    clearTimeout(this.timer)
   }
 
   onForeground(): void {
