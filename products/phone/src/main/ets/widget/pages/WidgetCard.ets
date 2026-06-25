@@ -1,6 +1,7 @@
 @Entry
 @Component
 struct WidgetCard {
+  fileNameList: string[] = new Array(2).fill('')
   /*
    * The title.
    */
@@ -27,26 +28,61 @@ struct WidgetCard {
   readonly fullHeightPercent: string = '100%';
 
   build() {
-    Row() {
-      Column() {
-        Text(this.title)
-          .fontSize($r('app.float.font_size'))
-          .fontWeight(FontWeight.Medium)
-          .fontColor($r('sys.color.font'))
+    Column() {
+      Row() {
+        Text('今日推荐')
+          .fontColor($r('app.color.white'))
+          .fontSize(16)
       }
-      .width(this.fullWidthPercent)
+      .height(40)
+      .width('100%')
+      .justifyContent(FlexAlign.Center)
+
+      Row() {
+        ForEach(
+          this.fileNameList,
+          (url: string) => {
+            Row() {
+              Image('')
+                .borderRadius(12)
+                .width(50)
+                .aspectRatio(1)
+            }
+            .backgroundColor('#eee')
+            .borderRadius(12)
+          }
+        )
+      }
+      .justifyContent(FlexAlign.SpaceBetween)
+      .width('100%')
+      .layoutWeight(1)
+      .padding({
+        left: 20,
+        right: 20
+      })
+      .backgroundColor($r('app.color.white'))
+      .borderRadius({
+        topRight: 16,
+        topLeft: 16
+      })
+      .onClick(() => {
+        postCardAction(this, {
+          action: this.actionType, // 拉起应用的模式
+          abilityName: this.abilityName, // 拉起应用能力名称
+          params: {
+            // 卡片传递给应用的参数 应用在UIAbility里 冷启动onCreate 热启动onNewWant接收消息
+            message: this.message
+          }
+        })
+      })
     }
-    .height(this.fullHeightPercent)
-    .backgroundColor($r('sys.color.comp_background_primary'))
-    .onClick(() => {
-      postCardAction(this, {
-        action: this.actionType, // 拉起应用的模式
-        abilityName: this.abilityName, // 拉起应用能力名称
-        params: {
-          // 卡片传递给应用的参数 应用在UIAbility里 冷启动onCreate 热启动onNewWant接收消息
-          message: this.message
-        }
-      });
+    .linearGradient({
+      angle: '135',
+      colors: [
+        [$r('app.color.linear_begin'), 0],
+        [$r('app.color.linear_end'), 1]
+      ]
     })
+    .height('100%')
   }
 }
