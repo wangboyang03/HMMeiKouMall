@@ -2,12 +2,14 @@ import { AppSafeArea } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { webview } from "@kit.ArkWeb"
 import { HMRouterMgr } from "@hadss/hmrouter"
+import { emitter } from "@kit.BasicServicesKit"
+import { Constants } from "../Constants"
 
 @Component
 export struct WebComponent {
   safeAreaValue?: AppSafeArea = AppStorageV2.connect(AppSafeArea, () => new AppSafeArea())
-  @Prop title: string = "美寇商城"
-  @Prop src: ResourceStr = "m.taobao.com"
+  @Prop title: string = ""
+  @Prop src: ResourceStr = "m.suning.com"
   @State isLoading: boolean = false
   @State progress: number = 0
   controller: webview.WebviewController = new webview.WebviewController()
@@ -57,8 +59,8 @@ export struct WebComponent {
             const history = this.controller.getBackForwardEntries()  // 获取当前Webview的历史信息列表
             this.historyCurrIndex = history.currentIndex  // 当前在页面历史列表中的索引
             this.historySize = history.size  // 历史列表中索引的数量，最多保存50条，超过时起始记录会被覆盖
-            // AlertDialog.show({message: this.historyCurrIndex + '-' + this.historySize })
           })
+          .onTitleReceive((data: OnTitleReceiveEvent) => this.title = data?.title ?? "H5网页") // 获取网页标题给导航栏标题
       }
       .width('100%')
       .layoutWeight(1)
@@ -120,15 +122,43 @@ export struct WebComponent {
   @Builder MenuBuilder() {
     Menu() {
       MenuItem({ content: '首页' })
-        .onClick(() => {})
+        .onClick(() => {
+          HMRouterMgr.removeAll()
+          emitter.emit(Constants.SWITCH_HOMEPAGE, {
+            data: {
+              index: 0
+            }
+          })
+        })
       MenuItem({ content: '分类' })
-        .onClick(() => {})
+        .onClick(() => {
+          HMRouterMgr.removeAll()
+          emitter.emit(Constants.SWITCH_HOMEPAGE, {
+            data: {
+              index: 1
+            }
+          })
+        })
       MenuItem({ content: '购物袋' })
-        .onClick(() => {})
+        .onClick(() => {
+          HMRouterMgr.removeAll()
+          emitter.emit(Constants.SWITCH_HOMEPAGE, {
+            data: {
+              index: 3
+            }
+          })
+        })
       MenuItem({ content: '我的' })
-        .onClick(() => {})
+        .onClick(() => {
+          HMRouterMgr.removeAll()
+          emitter.emit(Constants.SWITCH_HOMEPAGE, {
+            data: {
+              index: 4
+            }
+          })
+        })
       MenuItem({ content: '刷新一下' })
-        .onClick(() => {})
+        .onClick(() => this.controller.refresh())
     }
     .width(100)
     .fontColor($r('app.color.text'))
