@@ -92,7 +92,9 @@ export struct SettingView {
           }
         })
         .onClick(() => {
-
+          HMRouterMgr.push({
+            pageUrl: StackAddress.PROFILE_WEB_PAGE
+          })
         })
 
       Image(this.appUser?.User?.avatar)

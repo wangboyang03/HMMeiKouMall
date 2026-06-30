@@ -60,4 +60,5 @@ export class StackAddress {
   static readonly ORDER_PAGE = "OrderView" // 订单页面
   static readonly MAP_PAGE = "MapView" // 地图页面
   static readonly RECOMMEND_PAGE = "RecommendView" // 推荐页面
+  static readonly PROFILE_WEB_PAGE = "ProfileWebView" // 个人编辑H5页面
 }
