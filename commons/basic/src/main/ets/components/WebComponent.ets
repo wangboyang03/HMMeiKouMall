@@ -1,9 +1,11 @@
-import { AppSafeArea } from "../models"
+import { AppSafeArea, LoginResponseViewModel } from "../models"
 import { AppStorageV2 } from "@kit.ArkUI"
 import { webview } from "@kit.ArkWeb"
 import { HMRouterMgr } from "@hadss/hmrouter"
 import { emitter } from "@kit.BasicServicesKit"
 import { Constants } from "../Constants"
+import { Logger } from "../utils/Logger"
+import { UserAuth } from "../utils/UserAuth"
 
 @Component
 export struct WebComponent {
@@ -61,6 +63,24 @@ export struct WebComponent {
             this.historySize = history.size  // 历史列表中索引的数量，最多保存50条，超过时起始记录会被覆盖
           })
           .onTitleReceive((data: OnTitleReceiveEvent) => this.title = data?.title ?? "H5网页") // 获取网页标题给导航栏标题
+          .onAppear(() => {
+            try {
+              this.controller.registerJavaScriptProxy({
+                // 查询用户信息
+                queryUser: (): LoginResponseViewModel => UserAuth.getInstance().getUser(),
+                // 设置用户信息
+                setUser: (data: LoginResponseViewModel): void => UserAuth.getInstance().setUser(data),
+                // 移除用户
+                removeUser: (): void => UserAuth.getInstance().setUser({} as LoginResponseViewModel)
+              },
+                "meikouProxy",
+                [
+                  "queryUser", "setUser", "removeUser"
+                ])
+            } catch (error) {
+              Logger.error("onAppear", error)
+            }
+          })
       }
       .width('100%')
       .layoutWeight(1)
