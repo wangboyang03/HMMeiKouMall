@@ -6,6 +6,11 @@ import { emitter } from "@kit.BasicServicesKit"
 import { Constants } from "../Constants"
 import { Logger } from "../utils/Logger"
 import { UserAuth } from "../utils/UserAuth"
+import { camera, cameraPicker } from "@kit.CameraKit"
+import { fileIo } from "@kit.CoreFileKit"
+import { photoAccessHelper } from "@kit.MediaLibraryKit"
+import { util } from "@kit.ArkTS"
+import { LocationData, LocationPlugin } from "../utils"
 
 @Component
 export struct WebComponent {
@@ -71,11 +76,55 @@ export struct WebComponent {
                 // 设置用户信息
                 setUser: (data: LoginResponseViewModel): void => UserAuth.getInstance().setUser(data),
                 // 移除用户
-                removeUser: (): void => UserAuth.getInstance().setUser({} as LoginResponseViewModel)
+                removeUser: (): void => UserAuth.getInstance().setUser({} as LoginResponseViewModel),
+                // 拉起相机拍照
+                pickerCamera: async () => {
+                  try {
+                    // 打开相机 获取base64编码
+                    const picker: cameraPicker.PickerProfile = {
+                      cameraPosition: camera.CameraPosition.CAMERA_POSITION_BACK
+                    }
+                    const pickerResult: cameraPicker.PickerResult = await cameraPicker.pick(this.getUIContext().getHostContext(), [cameraPicker.PickerMediaType.PHOTO], picker)
+                    // Logger.info(pickerResult.resultUri)
+                    const file = fileIo.openSync(pickerResult.resultUri, fileIo.OpenMode.READ_ONLY) // 打开文件
+                    const arrayBuffer = new ArrayBuffer(fileIo.statSync(file.fd).size) // 创建buffer缓存对象
+                    fileIo.readSync(file.fd, arrayBuffer) // 读取文件
+                    fileIo.closeSync(file) // 关闭文件
+                    const base64 = new util.Base64Helper()
+                    const string = base64.encodeToStringSync(new Uint8Array(arrayBuffer))
+                    return string
+                  } catch (error) {
+                    return ""
+                  }
+                },
+                // 拉起相册
+                pickerPhoto: async () => {
+                  try {
+                    // 打开相册选择图片
+                    const selectedOption = new photoAccessHelper.PhotoSelectOptions() // 创建选择图片的参数对象
+                    selectedOption.MIMEType = photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE // 选择图片类型的媒体
+                    selectedOption.maxSelectNumber = 1 // 约束最大的选择次数
+                    const photoPicker = new photoAccessHelper.PhotoViewPicker() // 创建图片选择器
+                    const selectedResult = await photoPicker.select(selectedOption) // 选择图片
+
+                    // 获取图片的base64编码
+                    const file = fileIo.openSync(selectedResult.photoUris[0], fileIo.OpenMode.READ_ONLY) // 打开文件
+                    const arrayBuffer = new ArrayBuffer(fileIo.statSync(file.fd).size) // 创建buffer缓存对象
+                    fileIo.readSync(file.fd, arrayBuffer) // 读取文件
+                    fileIo.closeSync(file) // 关闭文件
+                    const base64 = new util.Base64Helper()
+                    const string = base64.encodeToStringSync(new Uint8Array(arrayBuffer))
+                    return string
+                  } catch (error) {
+                    return ""
+                  }
+                },
+                // 获取省市区
+                getAreaColumns: (): Promise<LocationData> => LocationPlugin.getInstance().getLocationData(this.getUIContext().getHostContext()), // 获取省市区
               },
                 "meikouProxy",
                 [
-                  "queryUser", "setUser", "removeUser"
+                  "queryUser", "setUser", "removeUser", "pickerCamera", "pickerPhoto", "getAreaColumns"
                 ])
             } catch (error) {
               Logger.error("onAppear", error)

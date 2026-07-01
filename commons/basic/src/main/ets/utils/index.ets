@@ -10,3 +10,4 @@ export * from './CartManager' // 购物车管理
 export * from './HuaweiLoginAuth' // 华为登录
 export * from './ATManager'
 export * from './DownloadManager'
+export * from './LocationPulgin' // h5侧使用的三级城市联动插件
